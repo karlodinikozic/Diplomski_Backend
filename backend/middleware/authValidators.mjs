@@ -1,0 +1,10 @@
+import Joi, {default as joi} from 'joi'
+
+export const validateLogin = (obj)=>{
+    const loginSchema = Joi.object( {
+        email:Joi.string().email().required(),
+        password:Joi.string().pattern(new RegExp('/^.*(?=.{8,})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/')).required()
+    })
+    const {error}  = loginSchema.validate(obj)
+    return error;
+}
