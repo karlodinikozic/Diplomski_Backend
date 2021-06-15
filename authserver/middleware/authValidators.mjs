@@ -11,6 +11,7 @@ export const validateLogin = (obj)=>{
 
 export const checkForToken = (req,res,next) =>{
     try {
+     
         const bearerHeader = req.headers["authorization"];
        
         if (bearerHeader) {

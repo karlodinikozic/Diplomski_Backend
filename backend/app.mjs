@@ -23,9 +23,9 @@ app.use(cors())
 app.use('/api/v1',authRouter) //Authentification
 app.use('/api/v1',userRouter) //User CRUD
 
-app.use('/',(req,res)=>{
-    return res.send("HELLO TO BACKEND")
-})
+// app.use('/',(req,res)=>{
+//     return res.send("HELLO TO BACKEND")
+// })
 
 app.listen(PORT,()=>{
     console.log(`Server running on https//localhost:${PORT}`)

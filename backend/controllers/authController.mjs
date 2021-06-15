@@ -1,15 +1,10 @@
 
 import {default as axios} from 'axios'
+import { findServerUrl } from '../appsupport.mjs';
 
-import { PORT } from "../config/config.mjs";
-import { AUTH_PORT } from "../config/config.mjs";
 
-function findServerUrl(req,str1,str2){
-  let fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-  let newUrl = fullUrl.replace(PORT,AUTH_PORT)
-  newUrl = newUrl.replace(str1,str2)
-  return newUrl
-}
+
+
 
 export const loginResponse = async (req,res,next)=>{
   try {
@@ -28,7 +23,7 @@ export const loginResponse = async (req,res,next)=>{
 export const accessResponse = async(req,res,next)=>{
   try {
 
-    const newUrl = findServerUrl(req,'getAccess','auth/checkToken')
+    const newUrl = findServerUrl(req,'getAccess','auth/getAccess')
     const response = await axios.get(newUrl,{
       headers:req.headers
     })

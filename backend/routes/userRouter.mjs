@@ -1,7 +1,8 @@
 
 import { Router} from "express";
+import { deleteUser,readUser } from "../controllers/userController.mjs";
 
-import { checkIDParams } from "../middleware/userValidations.mjs";
+import { checkIDParams,checkAccess } from "../middleware/userValidations.mjs";
 
 
 export const router = Router();
@@ -10,10 +11,12 @@ export const router = Router();
 router.post('/user')
 
 //READ
-router.get('/user/:id')
+router.get('/user/:id',checkIDParams,checkAccess,readUser)
 
 //UPDATE
 router.patch('/user/:id')
 
 //DELETE
-router.delete('/user/:id',checkIDParams)
+router.delete('/user/:id',checkIDParams,checkAccess,deleteUser)
+
+

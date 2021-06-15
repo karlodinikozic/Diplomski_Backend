@@ -8,7 +8,7 @@ import { ACCESS_SECRET, REFRESH_SECRET } from "../config/config.mjs";
 const CreatAccessToken = async (id) => {
   try {
     const access_token = await jwt.sign({ _id: id }, ACCESS_SECRET, {
-      expiresIn: "3m",
+      expiresIn: "15m",
     }); 
     return access_token;
   } catch (error) {
@@ -62,7 +62,6 @@ export const loginUser = async (req, res, next) => {
 
 export const getAccess = async (req, res, next) => {
   try {
-
     const valid = jwt.verify(req.token, REFRESH_SECRET, function (err, decode) {
       if (err) {
         throw ErrorResponse.UnAutherized(`Invalid token ${req.token}`);
@@ -79,3 +78,21 @@ export const getAccess = async (req, res, next) => {
     next(error);
   }
 };
+
+export const checkAccessToken = async(req,res,next)=>{
+
+  const valid = jwt.verify(req.token, ACCESS_SECRET, function (err, decode) {
+    if (err) {
+      return res.send(401).send({message:`Invalid token ${err}`})
+    }
+
+    return decode;
+  });
+  const decode = await jwt.decode(req.token)
+  if(Date.now()>= decode.exp* 1000){
+    return res.send(444).send({message:"Token has expired"})
+  }
+
+  return res.status(200).send(valid._id)
+
+}
