@@ -1,8 +1,6 @@
-import { ErrorResponse } from "../errors/clientErrors.mjs";
-import { validateLogin } from "../middleware/authValidators.mjs";
+
 import {default as axios} from 'axios'
 
-import { default as jwt } from "jsonwebtoken";
 import { PORT } from "../config/config.mjs";
 import { AUTH_PORT } from "../config/config.mjs";
 
