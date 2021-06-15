@@ -11,12 +11,12 @@ connectDB()
 const app = express()
 app.use(express.json())
 
-app.use('/api/v1',authRouter)
+app.use('/api/v1/auth',authRouter)
 
-app.use('/',(req,res)=>{
-    return res.send("HELLO TO BACKEND")
+app.use('/',(req,res,next)=>{
+    return res.send(`${PORT} Hello auth server`)
 })
-
 app.listen(PORT,()=>{
     console.log(`Server running on https//localhost:${PORT}`)
+
 })

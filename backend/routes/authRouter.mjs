@@ -1,9 +1,9 @@
 
 import { Router} from "express";
-import { loginUser,getAccess } from "../controllers/authController.mjs";
-import { checkForToken } from "../middleware/authValidators.mjs";
+import { loginResponse,accessResponse } from "../controllers/authController.mjs";
+
 
 export const router = Router();
 
-router.post('/login',loginUser);
-router.post('/checkToken',checkForToken,getAccess);
+router.post('/login',loginResponse);
+router.get('/getAccess',accessResponse);

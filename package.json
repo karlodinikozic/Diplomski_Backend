@@ -1,0 +1,9 @@
+{
+  "scripts": {
+   
+    "dev": " concurrently  \"cd authserver && yarn run dev\" \"cd backend && yarn run dev\""
+  },
+  "dependencies": {
+    "concurrently": "^6.2.0"
+  }
+}
