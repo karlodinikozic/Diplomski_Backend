@@ -1,6 +1,6 @@
 {
   "scripts": {
-   
+    "predev":"concurrently  \"cd authserver && yarn add all\" \"cd backend && yarn add all\"",
     "dev": " concurrently  \"cd authserver && yarn run dev\" \"cd backend && yarn run dev\""
   },
   "dependencies": {
