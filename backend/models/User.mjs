@@ -46,7 +46,13 @@ const userSchema = new Schema({
   lastKnownLocation: {
     longitude: String,
     latitude: String,
+    required: false,
   },
+  email_verified:{
+    type:Boolean,
+    required:false,
+    default:false,
+  }
 });
 
 userSchema.virtual('fullName').get(()=>{

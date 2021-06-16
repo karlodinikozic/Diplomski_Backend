@@ -1,6 +1,7 @@
 
 import {default as axios} from 'axios'
 import { findServerUrl } from '../appsupport.mjs';
+import Joi from 'joi'
 
 export const checkIDParams = (req, res, next) => {
   const params_id = req.params.id;
@@ -44,3 +45,21 @@ export const checkAccess = async (req, res, next) => {
 
 };
   
+export const validateRegisterBody = (obj)=>{
+
+  const registerSchema = Joi.object( {
+    firstName:Joi.string().required(),
+    lastName:Joi.string().required(),
+    email:Joi.string().email().required(),
+    password:Joi.string().pattern(new RegExp('^.*(?=.{8,})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$')).required(),
+    gender:Joi.any().valid("Male","Female","Other").required(),
+    dob:Joi.date().raw().required(),
+    city:Joi.string().required(),
+    zip:Joi.number().required()
+})
+
+const {error}  = registerSchema.validate(obj)
+
+return error;
+
+}
