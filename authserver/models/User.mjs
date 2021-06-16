@@ -12,6 +12,9 @@ const userSchema = new Schema({
     type: String,
     require: [true, "password is Required"],
   },
+  email_verified:{
+    type:Boolean
+  }
 
 });
 

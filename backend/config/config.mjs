@@ -6,3 +6,5 @@ export const AUTH_PORT = 2000
 export const EMAIL_SECRET = "EMAIL_SECRET"
 export const EMAIL_NAME  = "yogehef919@laraskey.com"
 export const EMAIL_PASS = "63F457DDE52D83AC4B86CEE2210562C8E420"
+
+export const FRONT_LOCATION = "https://www.google.com/"

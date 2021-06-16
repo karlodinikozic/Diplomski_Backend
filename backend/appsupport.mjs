@@ -11,9 +11,6 @@ export function findServerUrl(req,str1,str2){
 
 export async function sendEmail  (recipient,message){
   
-
-
-
     const transporter = nodemailer.createTransport({
            host: 'smtp.elasticemail.com',
            port:  2525,
@@ -27,6 +24,6 @@ export async function sendEmail  (recipient,message){
        from: EMAIL_NAME,
        to:  recipient,
        subject: 'Confirm Email',
-       text: message,
+       html: message,
      });
 }

@@ -12,10 +12,11 @@ export const loginResponse = async (req,res,next)=>{
     const responce = await axios.post(newUrl,req.body,{
       headers:req.headers,
     })
+   
     return res.status(200).send(responce.data)
 
   } catch (error) {
-    next(error)
+    return res.status(error.response.status).send(error.response.data)
   }
 
 }

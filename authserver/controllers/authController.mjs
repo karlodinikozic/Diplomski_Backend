@@ -32,16 +32,22 @@ export const loginUser = async (req, res, next) => {
     const user = await User.findOne({ email });
 
     if (user == null) {
-      throw ErrorResponse.NotFound(`User with email: ${email} doesn't exits`);
+      return res.status(400).send({message:`User with email: ${email} doesn't exits`})
+
     }
 
+    //* Check Password
     const checkPassword = await bcrpyt.compare(password, user.password);
 
     if (!checkPassword) {
-      throw ErrorResponse.UnAutherized(
-        `Invalid password for User with ${email}`
-      );
+      return res.status(401).send({message:`Invalid password for User with ${email}`})
     }
+
+    //Check if email is verified
+    if(! user.email_verified){
+      return res.status(401).send({message:`Email ${email} is not verified`})
+    }
+
 
     const access_token = await CreatAccessToken(user._id);
     const refresh_toke = await jwt.sign({ _id: user._id }, REFRESH_SECRET, {
@@ -91,8 +97,9 @@ export const checkAccessToken = async(req,res,next)=>{
     return decode;
   });
   console.log(req.token)
+  console.log(error)
   if(error){
-    return res.status(401).send({message:error})
+    return res.status(400).send({message:error})
   }
  
   const decode = await jwt.decode(req.token)

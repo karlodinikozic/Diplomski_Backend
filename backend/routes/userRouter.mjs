@@ -1,6 +1,6 @@
 
 import { Router} from "express";
-import { deleteUser,readUser,updateUser,createUser } from "../controllers/userController.mjs";
+import { deleteUser,readUser,updateUser,createUser,verifyUserEmail } from "../controllers/userController.mjs";
 
 import { checkIDParams,checkAccess } from "../middleware/userValidations.mjs";
 
@@ -22,5 +22,8 @@ router.delete('/user/:id',checkIDParams,checkAccess,deleteUser)
 
 //Personal Page Data
 router.get('/user',checkAccess,(req,res,next)=>{req.params_id=req.user_id;next()},readUser)
+
+//Verfiy Email
+router.get('/user/verifyEmail/:token',verifyUserEmail)
 
 

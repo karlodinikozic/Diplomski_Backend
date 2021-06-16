@@ -1,5 +1,6 @@
 import Joi, {default as joi} from 'joi'
 import { ErrorResponse } from "../errors/clientErrors.mjs";
+import { default as _ } from 'lodash';
 export const validateLogin = (obj)=>{
     const loginSchema = Joi.object( {
         email:Joi.string().email().required(),
@@ -10,11 +11,11 @@ export const validateLogin = (obj)=>{
 }
 
 export const checkForToken = (req,res,next) =>{
-    try {
-        console.log("chekForToken")
+
+        
         const bearerHeader = req.headers["authorization"];
       
-        if (bearerHeader) {
+        if (bearerHeader && ! _.isUndefined(bearerHeader) ) {
          
           req.token = bearerHeader;
         
@@ -23,10 +24,7 @@ export const checkForToken = (req,res,next) =>{
           
           return res.status(400).send({message:"Missing token"})
         }
-    } catch (error) {
-  
-      return res.status(401).send(error)
-    }
+ 
   
 }
 

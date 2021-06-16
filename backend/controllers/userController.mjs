@@ -1,10 +1,12 @@
 import { User } from "../models/User.mjs";
 import { default as jwt } from "jsonwebtoken";
 import {default as bcrypt} from 'bcryptjs'
+import { default as _ } from "lodash";
 import { sendEmail } from "../appsupport.mjs";
 import { EMAIL_SECRET } from "../config/config.mjs";
 import { validateRegisterBody } from "../middleware/userValidations.mjs";
 import { validateUpdateBody } from "../middleware/userValidations.mjs";
+import { FRONT_LOCATION } from "../config/config.mjs";
 
 export const createUser = async (req, res, next) => {
   
@@ -18,8 +20,9 @@ export const createUser = async (req, res, next) => {
     let user_data = req.body
 
     //Check if email exists
-    if(await User.find({email:user_data.email})){
-      return res.status(400).send({message:`Email ${email} is already in use`})
+    const check_user = await User.find({email:user_data.email})
+    if( ! _.isEmpty(check_user)){
+      return res.status(400).send({message:`Email ${user_data.email} is already in use`})
     }
 
    
@@ -32,12 +35,12 @@ export const createUser = async (req, res, next) => {
     console.log(EMAIL_SECRET)
     //SEND EMAIL
     const emailToken = await jwt.sign({_id:user._id}, EMAIL_SECRET);
-    const emailUrl = `${req.protocol}://${req.get("host")}${
-      req.originalUrl
-    }/confirmation/${emailToken}`;
-    const email_message = `Molim vas kliknite ovdje kako bi ste potvrdili vaš email ${emailUrl}`;
-    const send_email=  await sendEmail(user.email,email_message);
-    console.log(send_email)
+
+
+    const emailUrl = `${req.protocol}://${req.get("host")}${req.originalUrl}verifyEmail/${emailToken}`;
+    const email_message = `<p>Molim vas kliknite ovdje kako bi ste potvrdili vaš email</p><a href="${emailUrl}">Potvrdi email</a> `;
+    await sendEmail(user.email,email_message);
+
 
     await user.save()
     return res.status(200).send({message:'Success'})
@@ -65,9 +68,9 @@ export const readUser = async (req, res, next) => {
 
 export const updateUser = async (req, res, next) => {
   try {
-    console.log("he21y")
+
      //VALIDATE BODY
-     const err = validateUpdateBody(req.body);
+     const err = validateRegisterBody(req.body);
      if (err) {
          return res.status(400).send({message:`Invalid request ${err}`})
      }
@@ -78,7 +81,11 @@ export const updateUser = async (req, res, next) => {
      const new_user_data = await User.findOneAndUpdate(query,update_data)
     console.log(new_user_data)
 
-    return res.status(200).send({message:"Succees" })
+    return res.status(200).send({
+      message:"Succees",
+      length:1,
+      data:new_user_data //TODO CHECK IF IT RETURNS NEW USER DATA 
+    })
 
   } catch (error) {
     return res.status(400).send(error)
@@ -95,3 +102,29 @@ export const deleteUser = async (req, res, next) => {
     return res.status(200).send(user);
   } catch (error) {}
 };
+
+export const verifyUserEmail = async(req,res,next)=>{
+  const token = req.params.token
+  if(!token || _.isEmpty(token)){
+    return res.status(400).send({message:"Missing Url Token"})
+  }
+
+  try {
+    const {_id} = await jwt.verify(token,EMAIL_SECRET)
+    
+    const user = await User.findById(_id)
+
+    if(!user){
+      return res.status(404).send("User not found")
+    }
+
+    user.email_verified = true;
+    await user.save()
+
+    return res.redirect(FRONT_LOCATION)
+
+  } catch (error) {
+    res.status(400).send(error.message)
+  }
+ 
+}
