@@ -14,9 +14,13 @@ router.post('/user',createUser)
 router.get('/user/:id',checkIDParams,checkAccess,readUser)
 
 //UPDATE
-router.patch('/user/:id',checkIDParams,checkAccess,updateUser)
+router.patch('/user',checkAccess,(req,res,next)=>{req.params_id=req.user_id;next()},updateUser)
 
 //DELETE
 router.delete('/user/:id',checkIDParams,checkAccess,deleteUser)
+
+
+//Personal Page Data
+router.get('/user',checkAccess,(req,res,next)=>{req.params_id=req.user_id;next()},readUser)
 
 

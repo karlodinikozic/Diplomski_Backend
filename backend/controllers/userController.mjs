@@ -4,6 +4,7 @@ import {default as bcrypt} from 'bcryptjs'
 import { sendEmail } from "../appsupport.mjs";
 import { EMAIL_SECRET } from "../config/config.mjs";
 import { validateRegisterBody } from "../middleware/userValidations.mjs";
+import { validateUpdateBody } from "../middleware/userValidations.mjs";
 
 export const createUser = async (req, res, next) => {
   
@@ -48,14 +49,41 @@ export const createUser = async (req, res, next) => {
 
 export const readUser = async (req, res, next) => {
   try {
-    const id = req.user_id;
-    const user = await User.findById(id);
-    console.log(user);
+   
+    const id = req.params_id;
+    const user = await User.findById(id);//TODO select read fields
+    console.log(user)
+    if(!user){
+      return res.status(404).send("User not found")
+    }
     return res.status(200).send(user);
-  } catch (error) {}
+  } catch (error) {
+
+    return res.status(400).send(error)
+  }
 };
 
-export const updateUser = async (req, res, next) => {};
+export const updateUser = async (req, res, next) => {
+  try {
+    console.log("he21y")
+     //VALIDATE BODY
+     const err = validateUpdateBody(req.body);
+     if (err) {
+         return res.status(400).send({message:`Invalid request ${err}`})
+     }
+     const id = req.params_id;
+     let update_data = req.body
+     const query = { _id: id };
+    
+     const new_user_data = await User.findOneAndUpdate(query,update_data)
+    console.log(new_user_data)
+
+    return res.status(200).send({message:"Succees" })
+
+  } catch (error) {
+    return res.status(400).send(error)
+  }
+};
 
 export const deleteUser = async (req, res, next) => {
   try {

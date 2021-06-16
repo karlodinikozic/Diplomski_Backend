@@ -11,22 +11,21 @@ export const validateLogin = (obj)=>{
 
 export const checkForToken = (req,res,next) =>{
     try {
-     
+        console.log("chekForToken")
         const bearerHeader = req.headers["authorization"];
-       
+      
         if (bearerHeader) {
          
-  
           req.token = bearerHeader;
-       
+        
           next();
         } else {
           
-          throw ErrorResponse.Forbidden("Missing Token")
+          return res.status(400).send({message:"Missing token"})
         }
     } catch (error) {
   
-     next (error)   
+      return res.status(401).send(error)
     }
   
 }

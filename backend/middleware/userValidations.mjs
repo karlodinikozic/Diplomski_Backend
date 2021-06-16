@@ -19,26 +19,32 @@ export const checkAccess = async (req, res, next) => {
     
    
     try {
+    
         //* Check if token exists    
         const access = req.headers['authorization']
+
         if(!access){
             return res.status(401).send({message:"Missing User Token"})
         }
+        let newUrl = findServerUrl(req,`user`,'auth/checkToken')
      
-        let newUrl = findServerUrl(req,`user/${req.params_id}`,'auth/checkToken')
-
+  
         const response = await axios.get(newUrl,{
-            headers:req.headers
-        })
+            headers:{
+              authorization: access
+            }
+        })     
 
+    
         req.user_id = response.data
-      
+
         next()
 
 
 
     } catch (error) {
-        console.log(error)
+ 
+      return res.status(400).send(error)
     }
 
 
@@ -59,6 +65,28 @@ export const validateRegisterBody = (obj)=>{
 })
 
 const {error}  = registerSchema.validate(obj)
+
+return error;
+
+}
+
+
+export const validateUpdateBody = (obj)=>{
+
+  const updateSchema = Joi.object( {
+    firstName:Joi.string(),
+
+    lastName:Joi.string(),    
+    gender:Joi.any().valid("Male","Female","Other"),
+
+    dob:Joi.date().raw(),
+
+    city:Joi.string(),
+
+    zip:Joi.number(),
+  })
+
+const {error}  = updateSchema.validate(obj)
 
 return error;
 
