@@ -1,6 +1,6 @@
 
 import { Router} from "express";
-import { deleteUser,readUser,updateUser,createUser,verifyUserEmail } from "../controllers/userController.mjs";
+import { deleteUser,readUser,updateUser,createUser,verifyUserEmail,setActive } from "../controllers/userController.mjs";
 
 import { checkIDParams,checkAccess } from "../middleware/userValidations.mjs";
 
@@ -14,16 +14,20 @@ router.post('/user',createUser)
 router.get('/user/:id',checkIDParams,checkAccess,readUser)
 
 //UPDATE
-router.patch('/user',checkAccess,(req,res,next)=>{req.params_id=req.user_id;next()},updateUser)
+router.patch('/user',checkAccess,(req,res,next)=>{req.params_id=req.user_id;next()},setActive,updateUser)
 
 //DELETE
 router.delete('/user/:id',checkIDParams,checkAccess,deleteUser)
 
 
 //Personal Page Data
-router.get('/user',checkAccess,(req,res,next)=>{req.params_id=req.user_id;next()},readUser)
+router.get('/user',checkAccess,(req,res,next)=>{req.params_id=req.user_id;next()},setActive,readUser)
 
 //Verfiy Email
 router.get('/user/verifyEmail/:token',verifyUserEmail)
+
+
+// TODO Forgot password Email
+//router.get('/user/forgotPassword',forgotPassword)
 
 

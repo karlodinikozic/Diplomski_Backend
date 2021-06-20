@@ -52,6 +52,15 @@ const userSchema = new Schema({
     type:Boolean,
     required:false,
     default:false,
+  },
+  description:{
+    type:String,
+    required:false
+  },
+  sexsualOrientation:{ //TODO ENHANCE THIS
+    type:Number,
+    min:0,
+    max:2
   }
 });
 
