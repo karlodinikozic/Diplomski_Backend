@@ -43,7 +43,7 @@ export const createUser = async (req, res, next) => {
     return res.status(200).send({message:'Success'})
   } catch (error) {
     console.log(error)
-    next(error)
+    res.status(400).send(error)
   }
 
 };
@@ -129,10 +129,15 @@ export const verifyUserEmail = async(req,res,next)=>{
 //TODO CHECK THIS
 export const setActive = async(req,res,next)=>{
   try {
-    await User.findOneAndUpdate({_id:req.params_id},{lastActive: Date.now()})
+    const user = await User.findById({_id:req.params_id})
+    if(user.lastKnownLocation == false){
+      //TODO QUERY LOCATION 
+    }
+    user.lastActive = Date.now()
+    await user.save()
     next()
   } catch (error) {
     console.log(error);
-    next(error)
+    res.status(400).send(error)
   }
 }

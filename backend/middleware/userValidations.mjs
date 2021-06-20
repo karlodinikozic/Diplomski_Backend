@@ -87,7 +87,9 @@ export const validateUpdateBody = (obj)=>{
     lastKnownLocation:Joi.object({
       latitude:Joi.string().required(),
       longitude:Joi.string().required()
-    })
+    }),
+    description:Joi.string(),
+    sexsualOrientation:Joi.number().max(2).min(0)
   })
 
 const {error}  = updateSchema.validate(obj)

@@ -47,6 +47,7 @@ const userSchema = new Schema({
     longitude: String,
     latitude: String,
     required: false,
+    default:false,
   },
   email_verified:{
     type:Boolean,
