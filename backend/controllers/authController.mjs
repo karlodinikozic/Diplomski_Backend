@@ -26,10 +26,13 @@ export const accessResponse = async(req,res,next)=>{
 
     const newUrl = findServerUrl(req,'getAccess','auth/getAccess')
     const response = await axios.get(newUrl,{
-      headers:req.headers
+      headers:{
+        'authorization':req.headers['authorization']
+      }
     })
     return res.status(200).send(response.data)
   } catch (error) {
-   next(error) 
+    return res.status(error.response.status).send(error.response.data)
+  
   }
 }

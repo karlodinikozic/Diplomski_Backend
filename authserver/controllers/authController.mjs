@@ -1,4 +1,4 @@
-import { ErrorResponse } from "../errors/clientErrors.mjs";
+
 import { validateLogin } from "../middleware/authValidators.mjs";
 import { User } from "../models/User.mjs";
 import { default as bcrpyt } from "bcryptjs";
@@ -24,7 +24,8 @@ export const loginUser = async (req, res, next) => {
     //* Valideting the request
     const errors = validateLogin(req.body);
     if (errors) {
-      throw ErrorResponse.myClientError(errors.details[0]);
+      return res.status(400).send(errors.details[0]);
+
     }
 
     //* Check if user exists
@@ -63,26 +64,28 @@ export const loginUser = async (req, res, next) => {
       .status(200)
       .send({ lenght: 1, data: token, message: "Successfuly logged in" });
   } catch (err) {
-    next(err);
+    return res.status(400).send(err)
   }
 };
 
 export const getAccess = async (req, res, next) => {
   try {
-    const valid = jwt.verify(req.token, REFRESH_SECRET, function (err, decode) {
+    const valid = await jwt.verify(req.token, REFRESH_SECRET, function (err, decode) {
       if (err) {
-        throw ErrorResponse.UnAutherized(`Invalid token ${req.token}`);
+        return false
       }
 
       return decode;
     });
-
+    if(valid == false){
+      return res.status(401).send({message:`Invalid token ${req.token}`});
+    }
     const new_access_token = await CreatAccessToken(valid._id);
     return res
       .status(200)
       .send({ lenght: 1, data: new_access_token, message: "Success" });
   } catch (error) {
-    next(error);
+    return res.status(400).send(error)
   }
 };
 
@@ -96,8 +99,7 @@ export const checkAccessToken = async(req,res,next)=>{
    
     return decode;
   });
-  console.log(req.token)
-  console.log(error)
+
   if(error){
     return res.status(400).send({message:error})
   }
