@@ -20,11 +20,12 @@ export const checkAccess = async (req, res, next) => {
     
    
     try {
-    
-        //* Check if token exists    
-        const access = JSON.parse(req.headers['authorization'])
 
-        if(!access || _.isUndefined(access) || _.isNull(access)){
+        //* Check if token exists    
+        const access = req.headers['authorization']
+       
+
+        if(!access || _.isUndefined(access) || _.isNull(access) || access=="null" || access=="undefiend"){
           console.log(access)
             return res.status(401).send({message:"Missing User Token"})
         }
@@ -45,8 +46,7 @@ export const checkAccess = async (req, res, next) => {
 
 
     } catch (error) {
-     
-      return res.status(400).send(error)
+      return res.status(error.response.status).send(error.response.data)
     }
 
 

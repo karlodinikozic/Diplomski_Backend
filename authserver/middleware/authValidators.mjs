@@ -14,11 +14,10 @@ export const validateLogin = (obj)=>{
 export const checkForToken = (req,res,next) =>{
 
         
-        const bearerHeader = JSON.parse(req.headers["authorization"]);
-        if ( ! _.isUndefined(bearerHeader) && !  _.isEmpty(bearerHeader)  && ! _.isNull(bearerHeader) ) {
-          console.log("hey")
+        const bearerHeader = req.headers["authorization"];
+        if ( ! _.isUndefined(bearerHeader) && !  _.isEmpty(bearerHeader) && bearerHeader!="null" || bearerHeader!="undefiend" && ! _.isNull(bearerHeader) ) {
+      
           req.token = bearerHeader;
-          console.log(req.token)
           next();
         } else {
           

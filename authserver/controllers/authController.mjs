@@ -103,7 +103,8 @@ export const checkAccessToken = async(req,res,next)=>{
   });
 
   if(error){
-    return res.status(400).send({message:error})
+ 
+    return res.status(401).send({message:error})
   }
  
   const decode = await jwt.decode(req.token)
