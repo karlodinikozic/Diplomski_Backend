@@ -1,6 +1,5 @@
 
 import {default as axios} from 'axios'
-import { findServerUrl } from '../appsupport.mjs';
 import Joi from 'joi'
 import { default as _ } from 'lodash';
 
@@ -23,21 +22,21 @@ export const checkAccess = async (req, res, next) => {
 
         //* Check if token exists    
         const access = req.headers['authorization']
-       
+     
 
         if(!access || _.isUndefined(access) || _.isNull(access) || access=="null" || access=="undefiend"){
-          console.log(access)
+          
             return res.status(401).send({message:"Missing User Token"})
         }
-        let newUrl = findServerUrl(req,`user`,'auth/checkToken')
+        
      
   
-        const response = await axios.get(newUrl,{
+        const response = await axios.get(req.newUrl,{
             headers:{
               authorization: access
             }
         })     
-
+        console.log(response.data)
     
         req.user_id = response.data
 
@@ -46,6 +45,7 @@ export const checkAccess = async (req, res, next) => {
 
 
     } catch (error) {
+      
       return res.status(error.response.status).send(error.response.data)
     }
 
@@ -86,7 +86,7 @@ export const validateUpdateBody = (obj)=>{
     city:Joi.string(),
 
     zip:Joi.number(),
-    lastKnownLocation:Joi.object({
+    location:Joi.object({
       latitude:Joi.string().required(),
       longitude:Joi.string().required()
     }),
@@ -100,3 +100,13 @@ const {error}  = updateSchema.validate(obj)
 return error;
 
 }
+
+export const validateQueryBody = (obj) =>{
+  const updateSchema = Joi.object({
+    range:Joi.number().min(5).max(500),
+  })
+
+  const {error}  = updateSchema.validate(obj)
+  return error;
+}
+

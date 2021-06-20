@@ -44,11 +44,16 @@ const userSchema = new Schema({
     type: Date,
     required: false,
   },
-  lastKnownLocation: {
-    longitude: String,
-    latitude: String,
+  lastKnownLocation: { 
+    type: {
+    type: String, // Don't do `{ location: { type: String } }`
+    enum: ['Point'], // 'location.type' must be 'Point'
+    required: false
+  },
+  coordinates: {
+    type: [Number],
     required: false,
-    default:false,
+  }
   },
   email_verified:{
     type:Boolean,
