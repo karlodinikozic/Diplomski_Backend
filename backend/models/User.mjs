@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { CLOUDINARY_URL } from "../config/config.mjs";
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
@@ -62,6 +63,12 @@ const userSchema = new Schema({
     type:Number,
     min:0,
     max:2
+  },
+  imageUrl:{
+    type:String,
+    required:false,
+    default:CLOUDINARY_URL+"/dbfwwnhat/image/upload/v1624200889/users/rvzipikczav6cdlwemyi.png"
+
   }
 });
 

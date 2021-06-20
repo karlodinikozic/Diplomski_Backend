@@ -1,5 +1,18 @@
-import { PORT ,AUTH_PORT,EMAIL_NAME,EMAIL_PASS} from "./config/config.mjs";
+import { PORT ,AUTH_PORT,EMAIL_NAME,EMAIL_PASS,GEOCODER_PROVIDER,GEOCDOER_API_KEY} from "./config/config.mjs";
 import { default as nodemailer } from "nodemailer";
+
+
+import {default as NodeGeocoder} from 'node-geocoder'
+
+
+const options = {
+    provider:GEOCODER_PROVIDER,
+    httpAdapter: 'https',
+    apiKey: GEOCDOER_API_KEY,
+    formatter: null
+}
+
+const geocoder = NodeGeocoder(options)
 
 
 export function findServerUrl(req,str1,str2){
@@ -26,4 +39,30 @@ export async function sendEmail  (recipient,message){
        subject: 'Confirm Email',
        html: message,
      });
+}
+
+//TODO ADD ADDRESS IF NEEDED
+export async function getLocation(city,zip){
+  try {
+    const loc =  await geocoder.geocode({
+     
+      country: 'Croatia',
+      zipcode: zip,
+      city:city
+    });
+
+    const location = {
+      latitude:loc[0].latitude,
+      longitude:loc[0].longitude
+    }  
+    return location
+    
+  } catch (error) {
+    console.log(error)
+    return error
+  }
+
+
+
+
 }

@@ -6,6 +6,7 @@ import { sendEmail } from "../appsupport.mjs";
 import { EMAIL_SECRET } from "../config/config.mjs";
 import { validateRegisterBody,validateUpdateBody } from "../middleware/userValidations.mjs";
 import { FRONT_LOCATION } from "../config/config.mjs";
+import { getLocation } from "../appsupport.mjs";
 
 export const createUser = async (req, res, next) => {
   
@@ -73,6 +74,10 @@ export const updateUser = async (req, res, next) => {
      }
      const id = req.params_id;
      let update_data = req.body
+     if(update_data.lastKnownLocation == false){
+       delete update_data.lastKnownLocation;
+     }
+
      const query = { _id: id };
     
      const new_user_data = await User.findOneAndUpdate(query,update_data)
@@ -130,8 +135,13 @@ export const verifyUserEmail = async(req,res,next)=>{
 export const setActive = async(req,res,next)=>{
   try {
     const user = await User.findById({_id:req.params_id})
-    if(user.lastKnownLocation == false){
+
+
+    if(user.lastKnownLocation == "false"){
       //TODO QUERY LOCATION 
+      const location = await getLocation(user.city,user.zip)
+      user.lastKnownLocation = location
+
     }
     user.lastActive = Date.now()
     await user.save()
