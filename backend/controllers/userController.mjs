@@ -78,6 +78,8 @@ export const updateUser = async (req, res, next) => {
        delete update_data.lastKnownLocation;
      }
 
+     //TODO if address change 
+
      const query = { _id: id };
     
      const new_user_data = await User.findOneAndUpdate(query,update_data)

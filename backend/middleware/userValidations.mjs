@@ -2,6 +2,7 @@
 import {default as axios} from 'axios'
 import { findServerUrl } from '../appsupport.mjs';
 import Joi from 'joi'
+import { default as _ } from 'lodash';
 
 export const checkIDParams = (req, res, next) => {
   const params_id = req.params.id;
@@ -21,9 +22,10 @@ export const checkAccess = async (req, res, next) => {
     try {
     
         //* Check if token exists    
-        const access = req.headers['authorization']
+        const access = JSON.parse(req.headers['authorization'])
 
-        if(!access){
+        if(!access || _.isUndefined(access) || _.isNull(access)){
+          console.log(access)
             return res.status(401).send({message:"Missing User Token"})
         }
         let newUrl = findServerUrl(req,`user`,'auth/checkToken')
@@ -43,7 +45,7 @@ export const checkAccess = async (req, res, next) => {
 
 
     } catch (error) {
- 
+     
       return res.status(400).send(error)
     }
 

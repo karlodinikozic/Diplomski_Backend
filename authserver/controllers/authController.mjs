@@ -91,8 +91,10 @@ export const getAccess = async (req, res, next) => {
 
 export const checkAccessToken = async(req,res,next)=>{
   let error ;
+ try {
+   
  
-  const valid = jwt.verify(req.token, ACCESS_SECRET, function (err, decode) {
+  const valid = await jwt.verify(req.token, ACCESS_SECRET, function (err, decode) {
     if (err) {
       error = `Invalid token ${err}`
     }
@@ -110,5 +112,7 @@ export const checkAccessToken = async(req,res,next)=>{
   }
 
   return res.status(200).send(valid._id)
-
+ } catch (err) {
+    return res.send(401).send(err) 
+  }
 }
