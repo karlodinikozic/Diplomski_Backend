@@ -64,7 +64,7 @@ const userSchema = new Schema({
     type:String,
     required:false
   },
-  sexsualOrientation:{ //TODO ENHANCE THIS
+  sexualOrientation:{ //TODO ENHANCE THIS
     type:Number,
     min:0,
     max:2
@@ -76,6 +76,8 @@ const userSchema = new Schema({
 
   }
 });
+
+userSchema.index({ lastKnownLocation : "2dsphere" } )
 
 userSchema.virtual('fullName').get(()=>{
     return this.firstName + " "+ this.lastName;

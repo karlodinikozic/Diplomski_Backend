@@ -36,7 +36,7 @@ export const checkAccess = async (req, res, next) => {
               authorization: access
             }
         })     
-        console.log(response.data)
+        
     
         req.user_id = response.data
 

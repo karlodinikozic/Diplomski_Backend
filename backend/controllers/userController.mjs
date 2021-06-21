@@ -81,19 +81,20 @@ export const updateUser = async (req, res, next) => {
         coordinates: [longitude, latitude],
       };
       delete update_data.location
-
     }
 
 
 
-    const query = { _id: id };
 
-    const new_user_data = await User.findOneAndUpdate(query, update_data); //TODOD SEND NEW OBJECT
+  
+    const user = await User.findOneAndUpdate({ _id: id },update_data,{new:true})
+
+
 
     return res.status(200).send({
       message: "Succees",
       length: 1,
-      data: new_user_data, 
+      data: user, 
     });
   } catch (error) {
     console.log(error)
