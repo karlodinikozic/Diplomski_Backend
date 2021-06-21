@@ -71,21 +71,24 @@ export const updateUser = async (req, res, next) => {
     }
     const id = req.params_id;
     let update_data = req.body;
+
     if (update_data.location) {
       //VALIDATE BODY
-
+   
       const { longitude, latitude } = update_data.location;
-      user.lastKnownLocation = {
+      update_data.lastKnownLocation = {
         type: "Point",
         coordinates: [longitude, latitude],
       };
+      delete update_data.location
+
     }
 
 
 
     const query = { _id: id };
 
-    const new_user_data = await User.findOneAndUpdate(query, update_data);
+    const new_user_data = await User.findOneAndUpdate(query, update_data); //TODOD SEND NEW OBJECT
 
     return res.status(200).send({
       message: "Succees",
@@ -93,6 +96,7 @@ export const updateUser = async (req, res, next) => {
       data: new_user_data, 
     });
   } catch (error) {
+    console.log(error)
     return res.status(400).send(error);
   }
 };
