@@ -87,8 +87,9 @@ export const validateUpdateBody = (obj)=>{
 
     zip:Joi.number(),
     location:Joi.object({
-      latitude:Joi.string().required(),
-      longitude:Joi.string().required()
+      longitude:Joi.number().required(),
+      latitude:Joi.number().required(),
+      
     }),
     description:Joi.string(),
     sexualOrientation:Joi.number().max(2).min(0),

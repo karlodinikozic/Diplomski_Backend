@@ -28,8 +28,8 @@ export const usersOnMap = async (req,res,next)=>{
         // const area = { center:user.lastKnownLocation.coordinates, radius:0 };
         // const result = await query.circle("lastKnownLocation",area)
 
-        // User.find({lastKnownLocation:{$nearSphear:}})
-        // console.log(user.lastKnownLocation.coordinates)
+        const result = User.find({lastKnownLocation:{$nearSphear:user.lastKnownLocation.coordinates}})
+        console.log(user.lastKnownLocation.coordinates)
 
 
 
