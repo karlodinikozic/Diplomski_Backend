@@ -91,7 +91,7 @@ export const validateUpdateBody = (obj)=>{
       longitude:Joi.string().required()
     }),
     description:Joi.string(),
-    sexsualOrientation:Joi.number().max(2).min(0),
+    sexualOrientation:Joi.number().max(2).min(0),
     imageUrl:Joi.string() //TODO FIX ONLY CLUDIARY DOMAIN
   })
 
