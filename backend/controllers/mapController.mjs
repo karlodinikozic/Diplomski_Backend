@@ -24,7 +24,7 @@ export const usersOnMap = async (req,res,next)=>{
         const query = User.find(); //TODO ADD FILLTERS
         
       
-        const result = await query.circle('lastKnownLocation',{center:[45.82069,16.10432],radius:(range / 6378.1),spherical: true})
+        const result = await query.circle('lastKnownLocation',{center:user.lastKnownLocation.coordinates,radius:(range / 6378.1),spherical: true})
         
    
 
