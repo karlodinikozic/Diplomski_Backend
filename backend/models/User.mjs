@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
-import { CLOUDINARY_URL } from "../config/config.mjs";
+
 const { Schema } = mongoose;
+
+import { CLOUDINARY_URL } from "../config/config.mjs";
+
+
 
 const userSchema = new Schema({
   firstName: {
@@ -88,4 +92,9 @@ userSchema.virtual('cityPostal').get(()=>{
 })
 
 
+
+
 export const User = mongoose.model("User", userSchema,"user");
+
+
+
