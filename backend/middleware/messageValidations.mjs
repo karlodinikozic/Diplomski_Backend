@@ -15,7 +15,7 @@ export const validateSaveMessage = (obj) => {
     } = validateSendMessageSchema.validate(obj)
 
     return error;
-};
+}
 
 export const validateCreateThread = (obj)=>{
     const validateCreateThreadSchem = Joi.object({
@@ -23,6 +23,15 @@ export const validateCreateThread = (obj)=>{
         message: Joi.string()
     })
 
-    const {error } = validateCreateThread.validate(obj)
+    const {error} = validateCreateThread.validate(obj)
     return error
+}
+
+export const checkChatHeader = (req,res,next)=>{
+    const chat_id = req.headers['chat_id'];
+    if(!chat_id || _.isUndefined(chat_id) || _.isNull(chat_id) || chat_id=="null" || chat_id=="undefiend"){
+        return res.status(401).send({message:"Missing chat ID"})
+    }
+    req.chat_id = chat_id;
+    next()
 }
