@@ -11,6 +11,6 @@ import { checkChatHeader } from "../middleware/messageValidations.mjs";
 export const router = Router();
 const chatUrl = (req,res,next)=>{req.newUrl = findServerUrl(req,`chat`,'auth/checkToken');next();}
 
-router.post("/get",chatUrl,checkAccess,checkChatHeader,getChatThread)
+router.get("/chat",chatUrl,checkAccess,checkChatHeader,getChatThread)
 router.post("/chat",chatUrl,checkAccess,createThread)
 router.patch("/chat",chatUrl,checkAccess,saveMessage)
