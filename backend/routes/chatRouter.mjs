@@ -5,6 +5,7 @@ import { saveMessage } from "../controllers/chatController.mjs";
 import { createThread } from "../controllers/chatController.mjs";
 import { getChatThread } from "../controllers/chatController.mjs";
 import { checkChatHeader } from "../middleware/messageValidations.mjs";
+import { findServerUrl } from '../appsupport.mjs';
 
 
 
