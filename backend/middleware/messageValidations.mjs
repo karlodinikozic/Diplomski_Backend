@@ -18,12 +18,12 @@ export const validateSaveMessage = (obj) => {
 }
 
 export const validateCreateThread = (obj)=>{
-    const validateCreateThreadSchem = Joi.object({
+    const validateCreateThreadScheme = Joi.object({
         recipient_id:Joi.string().required(),
         message: Joi.string()
     })
 
-    const {error} = validateCreateThread.validate(obj)
+    const {error} = validateCreateThreadScheme.validate(obj)
     return error
 }
 
