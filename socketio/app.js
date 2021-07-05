@@ -8,7 +8,7 @@ const io = require("socket.io")(8900, {
   
   const addUser = (userId, socketId) => {
     !users.some((user) => user.userId === userId) &&
-      users.push({ userId, socketId });
+    users.push({ userId, socketId });
   };
   
   const removeUser = (socketId) => {
@@ -32,6 +32,15 @@ const io = require("socket.io")(8900, {
     //send and get message
     socket.on("sendMessage", ({ senderId, receiverId, text }) => {
       const user = getUser(receiverId);
+      if(user == undefined){
+        const reportError = getUser(senderId)
+        
+      io.to(reportError.socketId).emit("Error", {
+        msg:'User disconected'
+      });
+      return;
+      }
+
       io.to(user.socketId).emit("getMessage", {
         senderId,
         text,

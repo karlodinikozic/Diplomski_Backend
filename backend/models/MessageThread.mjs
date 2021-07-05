@@ -19,7 +19,7 @@ const ChatThreadSchema = new Schema({
     },
     messages:[
         {
-            send: {
+            senderID: {
                 type: mongoose.ObjectId,
                 ref: 'User',
                 required: true

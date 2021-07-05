@@ -102,12 +102,3 @@ return error;
 
 }
 
-export const validateQueryBody = (obj) =>{
-  const updateSchema = Joi.object({
-    range:Joi.number().min(5).max(500),
-  })
-
-  const {error}  = updateSchema.validate(obj)
-  return error;
-}
-
