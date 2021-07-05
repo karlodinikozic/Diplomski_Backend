@@ -1,7 +1,6 @@
 
 import { query } from "express";
-import { validateFilterBody } from "../middleware/mapValidations.mjs";
-import { validateRangeFilter } from "../middleware/userValidations.mjs";
+import { validateFilterBody,validateRangeFilter } from "../middleware/mapValidations.mjs";
 import { User } from "../models/User.mjs";
 
 
