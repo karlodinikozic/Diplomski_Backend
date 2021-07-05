@@ -4,7 +4,7 @@ import { validateSaveMessage } from "../middleware/messageValidations.mjs";
 import { ChatThread } from "../models/MessageThread.mjs"
 class MessageObj{
     constructor(sender,message=" "){
-        this.send = sender
+        this.senderID = sender
         this.message = message
         this.date = Date.now()
     }
