@@ -2,6 +2,7 @@ import { default as _ } from "lodash";
 import { validateCreateThread } from "../middleware/messageValidations.mjs";
 import { validateSaveMessage } from "../middleware/messageValidations.mjs";
 import { ChatThread } from "../models/MessageThread.mjs"
+
 class MessageObj{
     constructor(sender,message=" "){
         this.senderID = sender
@@ -77,5 +78,15 @@ export const getChatThread = async (req,res,next)=>{
         return res.status(400).send(error)
     }
 }
+
+
+export const getUserChats = async (req,res,next)=>{
+    const chat_arr_1 = await ChatThread.find({user_1:req.user_id}).slice('messages',-1)
+
+    const chat_arr_2 = await ChatThread.find({user_2:req.user_id}).slice('messages',-1)
+
+    return res.status(200).send([...chat_arr_1,...chat_arr_2])
+}
+
 //TODO DELETE MESSAGE 
 //TODO DELETE CHAT
