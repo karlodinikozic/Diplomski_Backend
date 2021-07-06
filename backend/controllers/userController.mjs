@@ -72,6 +72,8 @@ export const updateUser = async (req, res, next) => {
     const id = req.params_id;
     let update_data = req.body;
 
+    update_data.complatedSetup = true;
+
     if (update_data.location) {
       //VALIDATE BODY
    

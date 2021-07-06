@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
-import { CLOUDINARY_URL } from "../config/config.mjs";
+
 
 
 
@@ -76,9 +76,16 @@ const userSchema = new Schema({
   imageUrl:{
     type:String,
     required:false,
-    default:CLOUDINARY_URL+"/dbfwwnhat/image/upload/v1624200889/users/rvzipikczav6cdlwemyi.png"
+    default:"v1624201830/users/bgtx9sq0vp96ws1s0vwu.png"
+ 
 
+  },
+  completedSetup:{
+    type:Booleans ,
+    required:false,
+    default:false,
   }
+
 });
 
 userSchema.index({ lastKnownLocation : "2dsphere" } )

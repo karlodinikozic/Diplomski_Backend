@@ -35,7 +35,7 @@ export const saveMessage = async (req,res,next)=>{
         }
         const {chat_id,message} =req.body
         const messageObj = new MessageObj(req.user_id,message)
-       const data = await ChatThread.findByIdAndUpdate({_id:req.chat_id},{$push:{messages:messageObj}},{new:true})
+       const data = await ChatThread.findByIdAndUpdate({_id:chat_id},{$push:{messages:messageObj}},{new:true})
         return res.status(200).send(data)
     } catch (error) {
         console.log(error)
