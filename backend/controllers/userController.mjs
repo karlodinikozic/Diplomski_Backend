@@ -10,6 +10,7 @@ import {
 } from "../middleware/userValidations.mjs";
 import { FRONT_LOCATION } from "../config/config.mjs";
 import { getLocation } from "../appsupport.mjs";
+import { UserPoints } from "../models/UserPoints.mjs";
 
 
 export const createUser = async (req, res, next) => {
@@ -42,6 +43,7 @@ export const createUser = async (req, res, next) => {
     await sendEmail(user.email, email_message);
 
     await user.save();
+
     return res.status(200).send({ message: "Success" });
   } catch (error) {
     console.log(error);
@@ -132,6 +134,11 @@ export const verifyUserEmail = async (req, res, next) => {
 
     user.email_verified = true;
     await user.save();
+
+    //CREATING USER POINTS 
+    //TODO CHECK THIS
+    const uPoints = await new UserPoints({user_id:_id})
+    await uPoints.save()
 
     return res.redirect(FRONT_LOCATION);
   } catch (error) {
