@@ -81,7 +81,7 @@ const userSchema = new Schema({
 
   },
   completedSetup:{
-    type:Booleans ,
+    type:Boolean ,
     required:false,
     default:false,
   }
