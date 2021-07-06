@@ -17,6 +17,21 @@ export const validateSaveMessage = (obj) => {
     return error;
 }
 
+
+export const validateBlockChat = (obj) => {
+
+    const validateSendMessageSchema = Joi.object({
+        chat_id:Joi.string().required(),
+        block:Joi.boolean().invalid(false).required()
+    })
+
+    const {
+        error
+    } = validateSendMessageSchema.validate(obj)
+
+    return error;
+}
+
 export const validateCreateThread = (obj)=>{
     const validateCreateThreadScheme = Joi.object({
         recipient_id:Joi.string().required(),

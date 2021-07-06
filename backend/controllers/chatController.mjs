@@ -1,4 +1,5 @@
 import { default as _ } from "lodash";
+import { validateBlockChat } from "../middleware/messageValidations.mjs";
 import { validateCreateThread } from "../middleware/messageValidations.mjs";
 import { validateSaveMessage } from "../middleware/messageValidations.mjs";
 import { ChatThread } from "../models/MessageThread.mjs"
@@ -81,11 +82,33 @@ export const getChatThread = async (req,res,next)=>{
 
 
 export const getUserChats = async (req,res,next)=>{
-    const chat_arr_1 = await ChatThread.find({user_1:req.user_id}).slice('messages',-1)
+    try {
+        const chat_arr_1 = await ChatThread.find({user_1:req.user_id}).slice('messages',-1)
 
-    const chat_arr_2 = await ChatThread.find({user_2:req.user_id}).slice('messages',-1)
+        const chat_arr_2 = await ChatThread.find({user_2:req.user_id}).slice('messages',-1)
+    
+        return res.status(200).send([...chat_arr_1,...chat_arr_2])
+    
+    } catch (error) {
+        return res.status(400).send(error)
+    }
+}
 
-    return res.status(200).send([...chat_arr_1,...chat_arr_2])
+export const blockChat = async (req,res,next)=>{
+    try {
+        const err = validateBlockChat(req.body);
+        if (err) {
+            return res.status(400).send({ message: `Invalid request ${err}` });
+        }
+        if(req.body.block==false){
+            return res.status(400).send({ message: `Invalid request Block must be true` });
+        }
+        await ChatThread.findByIdAndUpdate({_id:req.chat_id},{blockChat:true}) 
+        return res.status(200).send('Chat succesfuly blocked')
+    } catch (error) {
+        return res.status(400).send(error)
+    }
+
 }
 
 //TODO DELETE MESSAGE 

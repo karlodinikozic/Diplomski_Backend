@@ -34,7 +34,11 @@ const ChatThreadSchema = new Schema({
             
             },
         }
-    ]
+    ],
+    blockChat:{
+      type:Boolean,
+      defautl:false
+    }
   })
   
   export const ChatThread = mongoose.model("MessageThread", ChatThreadSchema);
