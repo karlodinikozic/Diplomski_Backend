@@ -161,7 +161,7 @@ export const blockChat = async (req,res,next)=>{
 
         if(error.message === 'Not enough points'){
             
-            return res.status(400).send({message:error.message})
+            return res.status(400).send(error.message)
         }
         return res.status(400).send(error)
     }
