@@ -1,4 +1,5 @@
 import { default as _ } from "lodash";
+import { decreaseUserPoints } from "../appsupport.mjs";
 import { validateBlockChat } from "../middleware/messageValidations.mjs";
 import { validateCreateThread } from "../middleware/messageValidations.mjs";
 import { validateSaveMessage } from "../middleware/messageValidations.mjs";
@@ -39,6 +40,12 @@ export const saveMessage = async (req,res,next)=>{
         }
         const {chat_id,message} =req.body
         const messageObj = new MessageObj(req.user_id,message)
+
+        const isChatBlocked = await ChatThread.findById(chat_id);
+        if(isChatBlocked.blockChat){
+            return res.status(400).send({ message: `Invalid request: Can not save send messages to block chat ` });
+        }
+
        const data = await ChatThread.findByIdAndUpdate({_id:chat_id},{$push:{messages:messageObj}},{new:true})
         return res.status(200).send(data)
     } catch (error) {
@@ -148,6 +155,9 @@ export const blockChat = async (req,res,next)=>{
             return res.status(400).send({ message: `Invalid request Block must be true` });
         }
         await ChatThread.findByIdAndUpdate({_id:req.chat_id},{blockChat:true}) 
+
+        await decreaseUserPoints(req.user_id)
+
         return res.status(200).send('Chat succesfuly blocked')
     } catch (error) {
         return res.status(400).send(error)

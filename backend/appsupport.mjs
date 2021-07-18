@@ -66,3 +66,12 @@ export async function getLocation(city,zip){
 
 
 }
+
+export async function decreaseUserPoints(user_id){
+  const uPoints = await UserPoints.find({user_id:user_id})
+  let lifes = uPoints[0].lifes;
+  lifes--
+  if(lifes<0){lifes = 0}
+  uPoints[0].lifes = lifes
+  await uPoints[0].save()
+}

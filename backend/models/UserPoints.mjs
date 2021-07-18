@@ -21,7 +21,10 @@ const UserPointsSchema = new Schema({
             ref:'User',
             required:true,
         }
-    ]
+    ],
+    chanage_date:{
+        type:Date
+    }
 
   })
   
