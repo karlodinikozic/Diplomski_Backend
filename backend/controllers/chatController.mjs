@@ -97,10 +97,11 @@ export const getUserChats = async (req,res,next)=>{
         const chat_arr_2 = await ChatThread.find({user_2:req.user_id}).slice('messages',-1)
         
         const results = [...new Set([...chat_arr_1,...chat_arr_2])] //get only unique
-       
+   
         const new_results = await Promise.all(results.map(async(el)=>{
-            let search_id = req.user_id === el.user_1? el.user_2 : el.user_1;
-            
+            let search_id = req.user_id.localeCompare(el.user_1)==0? el.user_2 : el.user_1;
+      
+
             const user = await User.findById(search_id);
             let result = {
                 firstName:user.firstName,
