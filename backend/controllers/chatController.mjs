@@ -76,12 +76,7 @@ export const createThread = async (req,res,next)=>{
         }
 
         //Decrease User Points
-        const uPoints = await UserPoints.find({user_id:req.user_id})
-        let lifes = uPoints[0].lifes;
-        lifes--
-        if(lifes<0){lifes = 0}
-        uPoints[0].lifes = lifes
-        await uPoints[0].save()
+        await decreaseUserPoints(req.user_id)
 
         const messageObj = new MessageObj(req.user_id,message)
         const chatThread = await new ChatThread({user_1:req.user_id,user_2:recipient_id,messages:[messageObj]})
@@ -163,6 +158,7 @@ export const blockChat = async (req,res,next)=>{
 
         return res.status(200).send({message:`Chat blocked succesfully by ${req.user_id}`,blocked:true,userWhoBlocked:req.user_id})
     } catch (error) {
+        console.log(error)
         return res.status(400).send(error)
     }
 
