@@ -15,7 +15,7 @@ export const getUserPoints = async (req,res,next)=>{
 
 export const decreaseUserPoints = async (req,res,next)=>{
     try {
-        const uPoints = UserPoints.find({user_id:req.user_id})
+        const uPoints = await UserPoints.find({user_id:req.user_id})
         let lifes = uPoints.lifes;
         lifes--
         if(lifes<0){lifes = 0}
