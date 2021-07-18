@@ -8,6 +8,7 @@ import {router as userRouter} from './routes/userRouter.mjs'
 import {router as authRouter} from './routes/authRouter.mjs'
 import {router as mapRouter} from './routes/mapRouter.mjs'
 import {router as chatRouter} from './routes/chatRouter.mjs'
+import {router as userPointsRouter} from './routes/userPointsRouter.mjs'
 
 
 //* CONNECT TO DB
@@ -30,6 +31,7 @@ app.use('/api/v1',authRouter) //Authentification
 app.use('/api/v1',userRouter) //User CRUD
 app.use('/api/v1',mapRouter) //
 app.use('/api/v1',chatRouter)
+app.use('/api/v1',userPointsRouter)
 
 
 
