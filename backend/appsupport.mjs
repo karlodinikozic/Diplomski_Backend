@@ -71,9 +71,10 @@ export async function decreaseUserPoints(res,user_id){
   const uPoints = await UserPoints.find({user_id:user_id})
   let lifes = uPoints[0].lifes;
   lifes--
-  if(lifes<0){lifes = 0
+  if(lifes<0){
+    lifes = 0
     return {error:true}
   }
   uPoints[0].lifes = lifes
-  await uPoints[0].save()
+ return  await uPoints[0].save()
 }

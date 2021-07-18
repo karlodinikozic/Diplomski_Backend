@@ -77,6 +77,7 @@ export const createThread = async (req,res,next)=>{
 
         //Decrease User Points
        const {error} =  await decreaseUserPoints(res,req.user_id)
+       console.log(error)
         if(error){
             return res.status(400).send("Not enough points") 
         }
