@@ -96,7 +96,7 @@ export const getChatThread = async (req,res,next)=>{
     try {
         const chatThread = await ChatThread.findById({_id:req.chat_id}) 
         .slice('messages', 20)
-        .select(['activities','user_1','user_2'])
+        .select(['activities','user_1','user_2','blockChat','userWhoBlocked'])
         .lean()
         .exec()
         //TODO GET ONLY LAST 25 MESSAGES
@@ -147,6 +147,8 @@ export const getUserChats = async (req,res,next)=>{
 
 export const blockChat = async (req,res,next)=>{
     try {
+
+        //TODO UNBLOCK CHAT XD
         const err = validateBlockChat(req.body);
         if (err) {
             return res.status(400).send({ message: `Invalid request ${err}` });
