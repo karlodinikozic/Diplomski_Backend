@@ -154,8 +154,9 @@ export const blockChat = async (req,res,next)=>{
         if(req.body.block==false){
             return res.status(400).send({ message: `Invalid request Block must be true` });
         }
-        await ChatThread.findByIdAndUpdate({_id:req.chat_id},{blockChat:true}) 
 
+        await ChatThread.findByIdAndUpdate({_id:req.body.chat_id},{blockChat:true}) 
+       
         await decreaseUserPoints(req.user_id)
 
         return res.status(200).send('Chat succesfuly blocked')

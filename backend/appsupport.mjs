@@ -1,6 +1,6 @@
 import { PORT ,AUTH_PORT,EMAIL_NAME,EMAIL_PASS,GEOCODER_PROVIDER,GEOCDOER_API_KEY} from "./config/config.mjs";
 import { default as nodemailer } from "nodemailer";
-
+import {UserPoints} from './models/UserPoints.mjs'
 
 import {default as NodeGeocoder} from 'node-geocoder'
 
