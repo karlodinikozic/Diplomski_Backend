@@ -76,14 +76,16 @@ export const createThread = async (req,res,next)=>{
         }
 
         //Decrease User Points
-        await decreaseUserPoints(res,req.user_id)
-
+       const {error} =  await decreaseUserPoints(res,req.user_id)
+        if(error){
+            return res.status(400).send("Not enough points") 
+        }
         const messageObj = new MessageObj(req.user_id,message)
         const chatThread = await new ChatThread({user_1:req.user_id,user_2:recipient_id,messages:[messageObj]})
         chatThread.save()
         return res.status(200).send({chat_id:chatThread._id})
     } catch (error) {
-        console.log(error)
+        
         return res.status(400).send(error)
     }
 }
@@ -153,8 +155,10 @@ export const blockChat = async (req,res,next)=>{
         }
         //TODO CHECK IF CHAT IS BLOCKED
    await ChatThread.findByIdAndUpdate({_id:req.body.chat_id},{blockChat:true,userWhoBlocked:req.user_id}) 
-       
-        await decreaseUserPoints(res,req.user_id)
+   const {error} =  await decreaseUserPoints(res,req.user_id)
+   if(error){
+       return res.status(400).send("Not enough points") 
+   }
 
         return res.status(200).send({message:`Chat blocked succesfully by ${req.user_id}`,blocked:true,userWhoBlocked:req.user_id})
     } catch (error) {

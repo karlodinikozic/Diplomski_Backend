@@ -72,7 +72,7 @@ export async function decreaseUserPoints(res,user_id){
   let lifes = uPoints[0].lifes;
   lifes--
   if(lifes<0){lifes = 0
-    return res.status(400).send("Not enought points")
+    return {error:'Not enough points'}
   }
   uPoints[0].lifes = lifes
   await uPoints[0].save()
