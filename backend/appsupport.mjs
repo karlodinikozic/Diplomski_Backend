@@ -67,12 +67,12 @@ export async function getLocation(city,zip){
 
 }
 
-export async function decreaseUserPoints(user_id){
+export async function decreaseUserPoints(res,user_id){
   const uPoints = await UserPoints.find({user_id:user_id})
   let lifes = uPoints[0].lifes;
   lifes--
   if(lifes<0){lifes = 0
-    throw new Error('Not enough points')
+    return res.status(400).send("Not enought points")
   }
   uPoints[0].lifes = lifes
   await uPoints[0].save()
