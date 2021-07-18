@@ -22,8 +22,9 @@ const UserPointsSchema = new Schema({
             required:true,
         }
     ],
-    chanage_date:{
-        type:Date
+    nextHeartAt:{
+        type:Date,
+        default:null,
     }
 
   })

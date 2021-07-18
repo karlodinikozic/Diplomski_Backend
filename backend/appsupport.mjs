@@ -3,6 +3,7 @@ import { default as nodemailer } from "nodemailer";
 import {UserPoints} from './models/UserPoints.mjs'
 
 import {default as NodeGeocoder} from 'node-geocoder'
+import { LIFE_REFILL_TIME } from "./config/config.mjs";
 
 
 const options = {
@@ -14,6 +15,8 @@ const options = {
 
 const geocoder = NodeGeocoder(options)
 
+
+export let timeOut = null
 
 export function findServerUrl(req,str1,str2){
     let fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
@@ -68,6 +71,7 @@ export async function getLocation(city,zip){
 }
 
 export async function decreaseUserPoints(res,user_id){
+
   const uPoints = await UserPoints.find({user_id:user_id})
   let lifes = uPoints[0].lifes;
   lifes--
@@ -75,6 +79,40 @@ export async function decreaseUserPoints(res,user_id){
     lifes = 0
     return {error:true}
   }
+
+
   uPoints[0].lifes = lifes
- return  await uPoints[0].save()
+  uPoints[0].nextHeartAt =  Date.now()+LIFE_REFILL_TIME
+  try {
+
+    //! TOOD ALLOW ONLY ONE SETTIMEOUT
+    if(timeOut==null){
+     timeOut= setTimeout(async()=>{await addUserPointAfterTime(user_id)},LIFE_REFILL_TIME)
+ 
+    }
+  
+  } catch (error) {
+    console.log(error.message)
+  }
+    await uPoints[0].save()
+    return{lifes:lifes}
+
+ 
+}
+
+async function addUserPointAfterTime(user_id){
+  
+  timeOut=null;
+  const uPoints = await UserPoints.find({user_id:user_id})
+  let lifes = uPoints[0].lifes;
+  lifes++
+  console.log(lifes-1+"=>"+lifes)
+  uPoints[0].lifes = lifes
+  uPoints[0].nextHeartAt =  Date.now()+LIFE_REFILL_TIME
+   await uPoints[0].save()
+
+   if(lifes<5){
+   timeOut= setTimeout(async()=>{await addUserPointAfterTime(user_id)},LIFE_REFILL_TIME)
+   }
+  
 }
