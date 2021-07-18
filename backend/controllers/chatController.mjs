@@ -4,6 +4,7 @@ import { validateCreateThread } from "../middleware/messageValidations.mjs";
 import { validateSaveMessage } from "../middleware/messageValidations.mjs";
 import { ChatThread } from "../models/MessageThread.mjs"
 import{User } from "../models/User.mjs";
+import{UserPoints } from "../models/UserPoints.mjs";
 
 class MessageObj{
     constructor(sender,message=" "){
@@ -66,6 +67,15 @@ export const createThread = async (req,res,next)=>{
         if(exists != false  && exists!= null){
             return res.status(200).send({chat_id:exists._id})
         }
+
+        //Decrease User Points
+        const uPoints = await UserPoints.find({user_id:req.user_id})
+        let lifes = uPoints[0].lifes;
+        lifes--
+        if(lifes<0){lifes = 0}
+        uPoints[0].lifes = lifes
+        await uPoints[0].save()
+
         const messageObj = new MessageObj(req.user_id,message)
         const chatThread = await new ChatThread({user_1:req.user_id,user_2:recipient_id,messages:[messageObj]})
         chatThread.save()
