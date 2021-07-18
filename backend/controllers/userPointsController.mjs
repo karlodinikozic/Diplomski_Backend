@@ -1,4 +1,4 @@
-import { UserPoints,User } from "../models/User.mjs";
+import { UserPoints } from "../models/UserPoints.mjs";
 
 
 export const getUserPoints = async (req,res,next)=>{
