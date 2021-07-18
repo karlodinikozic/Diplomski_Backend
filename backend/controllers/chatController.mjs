@@ -52,7 +52,15 @@ export const createThread = async (req,res,next)=>{
         if (err) {
             return res.status(400).send({ message: `Invalid request ${err}` });
         }
+
+    
+
         const {recipient_id,message} =req.body
+
+        if(recipient_id === req.user_id){
+            return res.status(400).send({ message: `Invalid request you can not create chat with your self` });
+        }
+
         //CHECK IF Chat exists
         const exists  = await checkIfChatExists(req,res)
         if(exists != false  && exists!= null){
@@ -91,7 +99,7 @@ export const getUserChats = async (req,res,next)=>{
         const results = [...new Set([...chat_arr_1,...chat_arr_2])] //get only unique
        
         const new_results = await Promise.all(results.map(async(el)=>{
-            let search_id = req.user_id === el.user_1? el.user_1 : el.user_2;
+            let search_id = req.user_id === el.user_1? el.user_2 : el.user_1;
             
             const user = await User.findById(search_id);
             let result = {
@@ -111,7 +119,6 @@ export const getUserChats = async (req,res,next)=>{
             return  result
 
         }))
-        console.log(new_results)
 
         return res.status(200).send(new_results)
     
