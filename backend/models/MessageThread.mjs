@@ -38,7 +38,13 @@ const ChatThreadSchema = new Schema({
     blockChat:{
       type:Boolean,
       defautl:false
+    },
+    userWhoBlocked:{
+      type:mongoose.ObjectId,
+      ref:'User',
+      default:null,
     }
+
   })
   
   export const ChatThread = mongoose.model("MessageThread", ChatThreadSchema);

@@ -154,12 +154,12 @@ export const blockChat = async (req,res,next)=>{
         if(req.body.block==false){
             return res.status(400).send({ message: `Invalid request Block must be true` });
         }
-
-        await ChatThread.findByIdAndUpdate({_id:req.body.chat_id},{blockChat:true}) 
+        //TODO CHECK IF CHAT IS BLOCKED
+   await ChatThread.findByIdAndUpdate({_id:req.body.chat_id},{blockChat:true,userWhoBlocked:req.user_id}) 
        
         await decreaseUserPoints(req.user_id)
 
-        return res.status(200).send('Chat succesfuly blocked')
+        return res.status(200).send({message:`Chat blocked succesfully by ${req.user_id}`,blocked:true,userWhoBlocked:req.user_id})
     } catch (error) {
         return res.status(400).send(error)
     }
