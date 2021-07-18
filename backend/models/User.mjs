@@ -76,7 +76,7 @@ const userSchema = new Schema({
   imageUrl:{
     type:String,
     required:false,
-    default:"v1624201830/users/bgtx9sq0vp96ws1s0vwu.png"
+    default:"https://res.cloudinary.com/dbfwwnhat/image/upload/v1624201830/users/bgtx9sq0vp96ws1s0vwu.png"
  
 
   },

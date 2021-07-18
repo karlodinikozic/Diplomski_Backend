@@ -3,6 +3,7 @@ import { validateBlockChat } from "../middleware/messageValidations.mjs";
 import { validateCreateThread } from "../middleware/messageValidations.mjs";
 import { validateSaveMessage } from "../middleware/messageValidations.mjs";
 import { ChatThread } from "../models/MessageThread.mjs"
+import{User } from "../models/User.mjs";
 
 class MessageObj{
     constructor(sender,message=" "){
@@ -86,8 +87,33 @@ export const getUserChats = async (req,res,next)=>{
         const chat_arr_1 = await ChatThread.find({user_1:req.user_id}).slice('messages',-1)
 
         const chat_arr_2 = await ChatThread.find({user_2:req.user_id}).slice('messages',-1)
-    
-        return res.status(200).send([...chat_arr_1,...chat_arr_2])
+        
+        const results = [...new Set([...chat_arr_1,...chat_arr_2])] //get only unique
+       
+        const new_results = await Promise.all(results.map(async(el)=>{
+            let search_id = req.user_id === el.user_1? el.user_1 : el.user_2;
+            
+            const user = await User.findById(search_id);
+            let result = {
+                firstName:user.firstName,
+                lastName:user.lastName,
+                imageUrl:user.imageUrl,
+                _id:el._id,
+                create_at:el.create_at,
+                user_1:el.user_1,
+                user_2:el.user_2,
+                messages:el.messages
+            }
+           
+            
+          
+       
+            return  result
+
+        }))
+        console.log(new_results)
+
+        return res.status(200).send(new_results)
     
     } catch (error) {
         return res.status(400).send(error)
