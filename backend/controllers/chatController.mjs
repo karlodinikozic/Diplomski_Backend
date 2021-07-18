@@ -158,7 +158,11 @@ export const blockChat = async (req,res,next)=>{
 
         return res.status(200).send({message:`Chat blocked succesfully by ${req.user_id}`,blocked:true,userWhoBlocked:req.user_id})
     } catch (error) {
-        console.log(error)
+
+        if(error.message === 'Not enough points'){
+            
+            return res.status(400).send({message:error.message})
+        }
         return res.status(400).send(error)
     }
 
