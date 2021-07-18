@@ -3,7 +3,9 @@ import { UserPoints } from "../models/UserPoints.mjs";
 
 export const getUserPoints = async (req,res,next)=>{
     try {
-        const uPoints = UserPoints.find({user_id:req.user_id})
+
+        const uPoints = await UserPoints.find({user_id:req.user_id})
+
         return res.status(200).send(uPoints)
     } catch (error) {
         res.status(400).send(error);
