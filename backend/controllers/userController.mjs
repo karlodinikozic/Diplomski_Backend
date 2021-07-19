@@ -93,14 +93,18 @@ export const updateUser = async (req, res, next) => {
 
     if(update_data.gallery){
       const user = await User.findById({_id:id})
-      const set = new Set([...update_data.gallery,...user.gallery])
-      update_data.gallery=[...set]
+      const set =  update_data.gallery.filter(el=>! _.find(user.gallery,el))
+
+      
+      update_data.gallery=[...set,...user.gallery]
     }
 
     if(update_data.interests){
       const user = await User.findById({_id:id})
-      const set = new Set([...update_data.interests,...user.interests])
-      update_data.interests=[...set]
+      const set =  update_data.interests.filter(el=>! _.find(user.interests,el))
+
+      
+      update_data.interests=[...set,...user.interests]
     }
 
 
