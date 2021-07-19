@@ -66,17 +66,21 @@ export const readUser = async (req, res, next) => {
 
 export const updateUser = async (req, res, next) => {
   try {
+
     //VALIDATE BODY
     const err = validateUpdateBody(req.body);
     if (err) {
+
       return res.status(400).send({ message: `Invalid request ${err}` });
     }
+
+
     const id = req.params_id;
     let update_data = req.body;
 
     update_data.completedSetup = true;
-    console.log(update_data)
-    if (update_data.location) {
+ 
+    if (update_data.location) { 
       //VALIDATE BODY
    
       const { longitude, latitude } = update_data.location;
@@ -86,7 +90,6 @@ export const updateUser = async (req, res, next) => {
       };
       delete update_data.location
     }
-
 
 
 

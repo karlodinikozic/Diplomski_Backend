@@ -105,7 +105,8 @@ const userSchema = new Schema({
      }
     }
   ],
-  gallery:[{
+  gallery:[
+    {
     imageUrl:{
       type:String,
       required:true,
