@@ -91,6 +91,12 @@ export const updateUser = async (req, res, next) => {
       delete update_data.location
     }
 
+    if(update_data.gallery){
+      const user = await User.findById({_id:id})
+      const set = new Set([...update_data.gallery,...user.gallery])
+      update_data.gallery=[...set]
+    }
+
 
 
   
