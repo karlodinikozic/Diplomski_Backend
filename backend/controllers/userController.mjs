@@ -97,6 +97,12 @@ export const updateUser = async (req, res, next) => {
       update_data.gallery=[...set]
     }
 
+    if(update_data.interests){
+      const user = await User.findById({_id:id})
+      const set = new Set([...update_data.interests,...user.interests])
+      update_data.interests=[...set]
+    }
+
 
 
   

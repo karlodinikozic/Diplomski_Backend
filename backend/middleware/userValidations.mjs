@@ -97,7 +97,7 @@ export const validateUpdateBody = (obj)=>{
     job:Joi.string(),
     education:Joi.string(),
     gallery:Joi.array().items(Joi.object({ imageUrl:Joi.string().required()})),
-    gallery:Joi.array().items(Joi.object({ category:Joi.string().required(),interest:Joi.string().required()})),
+    interests:Joi.array().items(Joi.object({ category:Joi.string().required(),interest:Joi.string().required()})),
 
 
   })
