@@ -109,10 +109,12 @@ async function addUserPointAfterTime(user_id){
   console.log(lifes-1+"=>"+lifes)
   uPoints[0].lifes = lifes
   uPoints[0].nextHeartAt =  Date.now()+LIFE_REFILL_TIME
-   await uPoints[0].save()
+  
 
    if(lifes<5){
    timeOut= setTimeout(async()=>{await addUserPointAfterTime(user_id)},LIFE_REFILL_TIME)
+   }else{
+    uPoints[0].nextHeartAt =null
    }
-  
+   await uPoints[0].save()
 }

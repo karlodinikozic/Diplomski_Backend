@@ -84,7 +84,34 @@ const userSchema = new Schema({
     type:Boolean ,
     required:false,
     default:false,
+  },
+  education:{
+    type:String,
+    required:false,
+  },
+  job:{
+    type:String,
+    required:false,
+  },
+  interests:[
+    {
+     category:{
+       type:String,
+       required:true
+     },
+     interest:{
+       type:String,
+      required:true,
+     }
+    }
+  ],
+  gallery:[{
+    imageUrl:{
+      type:String,
+      required:true,
+    }
   }
+  ]
 
 });
 

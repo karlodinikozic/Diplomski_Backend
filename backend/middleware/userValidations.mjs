@@ -93,7 +93,13 @@ export const validateUpdateBody = (obj)=>{
     }),
     description:Joi.string(),
     sexualOrientation:Joi.number().max(2).min(0),
-    imageUrl:Joi.string() //TODO FIX ONLY CLUDIARY DOMAIN
+    imageUrl:Joi.string(), //TODO FIX ONLY CLUDIARY DOMAIN
+    gallery:Joi.array({
+      imageUrl:Joi.string().required()
+    }),
+    job:Joi.string(),
+    education:Joi.string()
+
   })
 
 const {error}  = updateSchema.validate(obj)

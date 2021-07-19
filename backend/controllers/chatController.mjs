@@ -129,7 +129,7 @@ export const getChatThread = async (req, res, next) => {
     return res.status(400).send(error);
   }
 };
-
+//TODO NEW MESSAGE NOTIFICATION
 export const getUserChats = async (req, res, next) => {
   try {
     const chat_arr_1 = await ChatThread.find({ user_1: req.user_id }).slice(

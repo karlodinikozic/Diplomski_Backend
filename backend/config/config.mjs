@@ -15,4 +15,4 @@ export const GEOCDOER_API_KEY="jeOH3ZAqSTirAkIzBdCiFU4PF3cX8dgw"
 
 export const CLOUDINARY_URL ="https://cloudinary.com"
 
-export const LIFE_REFILL_TIME = 15000
+export const LIFE_REFILL_TIME = 150000
