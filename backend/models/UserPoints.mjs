@@ -25,7 +25,22 @@ const UserPointsSchema = new Schema({
     nextHeartAt:{
         type:Date,
         default:null,
-    }
+    },
+
+    notifications:[
+        {
+            type:{
+                type:String,
+                required:true,
+            },
+            senderId:{
+                type:mongoose.ObjectId,
+            ref:'User',
+            required:true,
+            }
+
+        }
+    ]
 
   })
   
