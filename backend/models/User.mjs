@@ -127,6 +127,10 @@ userSchema.virtual('fullName').get(()=>{
 userSchema.virtual('cityPostal').get(()=>{
     return this.city + ","+ this.zip;
 })
+userSchema.virtual('age').get(()=>{
+
+})
+
 
 
 

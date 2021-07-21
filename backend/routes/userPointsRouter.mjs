@@ -6,6 +6,7 @@ import { findServerUrl } from '../appsupport.mjs';
 import { getUserPoints } from "../controllers/userPointsController.mjs";
 import { decreaseUserPoints } from "../controllers/userPointsController.mjs";
 import { addNotifications } from "../controllers/userPointsController.mjs";
+import { notificationSeen } from "../controllers/userPointsController.mjs";
 
 
 export const router = Router();
@@ -19,6 +20,7 @@ const userPointsaddNotificationUrl = (req,res,next)=>{req.newUrl = findServerUrl
 router.get('/userPoints',userPointsUrl,checkAccess,getUserPoints)
 router.patch('/userPoints/decrease',userPointsDecreaseUrl,checkAccess,decreaseUserPoints)
 router.patch('/userPoints/notification',userPointsaddNotificationUrl,checkAccess,addNotifications)
+router.get('/userPoints/notification/:id',userPointsaddNotificationUrl,checkAccess,notificationSeen)
 
 
 

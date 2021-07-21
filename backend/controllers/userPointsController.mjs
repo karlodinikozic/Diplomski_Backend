@@ -1,6 +1,6 @@
 import { validateAddNotification } from "../middleware/userPointsValidations.mjs";
 import { UserPoints } from "../models/UserPoints.mjs";
-
+import { default as _ } from "lodash";
 
 export const getUserPoints = async (req,res,next)=>{
     try {
@@ -55,4 +55,30 @@ export const addNotifications = async(req,res,next)=>{
         
     
       
+}
+
+export const notificationSeen = async(req,res,next)=>{
+    const notif_id = req.params.id
+    try {
+    
+        if(_.isNull(notif_id) || _.isUndefined(notif_id)){
+            console.log("hey")
+            return res.status(400).send({ message: `Notification id is missing` });
+        }
+    
+        const uPoints = (await UserPoints.find({user_id:req.user_id}))[0]
+        uPoints.notifications.map(n=>{
+            if(n._id ==notif_id){
+                n.seen=true
+            }
+        })
+  
+       await uPoints.save()
+        return   res.status(200).send("Success");
+    } catch (error) {
+        console.log(error)
+           res.status(400).send(error);
+    }
+
+
 }

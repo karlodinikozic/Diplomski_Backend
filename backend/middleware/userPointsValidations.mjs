@@ -15,3 +15,4 @@ export const validateAddNotification = (obj) => {
 
   return error;
 };
+

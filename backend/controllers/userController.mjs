@@ -11,6 +11,9 @@ import {
 import { FRONT_LOCATION } from "../config/config.mjs";
 import { getLocation } from "../appsupport.mjs";
 import { UserPoints } from "../models/UserPoints.mjs";
+import { calculateAge } from "../appsupport.mjs";
+
+
 
 
 export const createUser = async (req, res, next) => {
@@ -59,8 +62,12 @@ export const readUser = async (req, res, next) => {
       return res.status(404).send("User not found");
     }
 
+
+    const data = user.toObject()
+    data['age'] = calculateAge(user.dob)
+   
     //TODO ADD AGE
-    return res.status(200).send(user);
+    return res.status(200).send(data);
   } catch (error) {
     return res.status(400).send(error);
   }
