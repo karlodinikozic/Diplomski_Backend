@@ -79,7 +79,7 @@ export const saveMessage = async (req, res, next) => {
       if(n.senderId ==req.user_id ){
         const hour= 1000 * 60 * 60;
         const hourago= Date.now() - hour;
-        if(date>hourago){
+        if(n.date>hourago){
           newNotif=false
         }
       }
