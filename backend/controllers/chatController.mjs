@@ -75,15 +75,15 @@ export const saveMessage = async (req, res, next) => {
 
     const uPoints =  (await UserPoints.find({user_id:receiverId}))[0]
     let newNotif = true
-    uPoints.chat_notifications.forEach(n =>{
-      if(n.senderId ==req.user_id ){
-        const hour= 1000 * 60 * 60;
-        const hourago= Date.now() - hour;
-        if(n.date>hourago){
-          newNotif=false
-        }
-      }
-    })
+
+    //GET LAST UNSEEN
+    const sameUserNotifications = uPoints.chat_notifications.filter(n=>n.senderId ==req.user_id)
+    const lastDate = sameUserNotifications.reduce((a,b)=>a.date > b.date?a : b)
+    console.log(lastDate)
+    
+    const hour= 1000 * 60 * 60;
+    const newNotif = lastDate+hour > notif.date
+
     if(newNotif){
       uPoints.chat_notifications.push(notif)
       await uPoints.save()
