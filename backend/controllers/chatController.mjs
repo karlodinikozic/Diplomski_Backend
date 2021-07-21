@@ -72,7 +72,7 @@ export const saveMessage = async (req, res, next) => {
     const receiverId = chatThread.user_1 == req.user_id ?  chatThread.user_2 :  chatThread.user_1;
     const notif=  new ChatNotification(req.user_id,receiverId,'You got new message from'+req.user_id) //TODO CHANGE THIS INTO NAME
 
-    const uPoints =  (await UserPoints.find({user_id:req.receiverId}))
+    const uPoints =  (await UserPoints.find({user_id:req.receiverId}))[0]
     let newNotif = true
     uPoints.chat_notifications.forEach(n =>{
       if(n.senderId ==req.user_id ){
