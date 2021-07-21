@@ -15,6 +15,17 @@ class MessageObj {
     this.date = Date.now();
   }
 }
+
+class ChatNotification{
+  constructor(sender,receiver,text) {
+    this.senderId = sender;
+    this.receiverId = sender;
+    this.text = text;
+    this.date = Date.now();
+    this.seen = false;
+  }
+}
+
 const checkIfChatExists = async (req, res) => {
   try {
     //TODO MAYBE PersonModel.find({ favouriteFoods: { "$in" : ["sushi"]} }, ...); array style
@@ -48,14 +59,34 @@ export const saveMessage = async (req, res, next) => {
     const { chat_id, message } = req.body;
     const messageObj = new MessageObj(req.user_id, message);
 
-    const isChatBlocked = await ChatThread.findById(chat_id);
-    if (isChatBlocked.blockChat) {
+    const chatThread = await ChatThread.findById(chat_id);
+    if (chatThread.blockChat) {
       return res
         .status(400)
         .send({
           message: `Invalid request: Can not save send messages to block chat `,
         });
     }
+
+    //TODO CHAT NOTIFICATIONS
+    const receiverId = chatThread.user_1 == req.user_id ?  chatThread.user_2 :  chatThread.user_1;
+    const notif=  new ChatNotification(req.user_id,receiverId,'You got new message from'+req.user_id) //TODO CHANGE THIS INTO NAME
+
+    const uPoints =  (await UserPoints.find({user_id:req.receiverId}))
+    let newNotif = true
+    uPoints.chat_notifications.forEach(n =>{
+      if(n.senderId ==req.user_id ){
+        const hour= 1000 * 60 * 60;
+        const hourago= Date.now() - hour;
+        if(date>hourago){
+          newNotif=false
+        }
+      }
+    })
+
+    uPoints.chat_notifications.push(notif)
+    await uPoints.save()
+   
 
     const data = await ChatThread.findByIdAndUpdate(
       { _id: chat_id },

@@ -58,6 +58,37 @@ const UserPointsSchema = new Schema({
       }
     },
   ],
+  chat_notifications:[
+    {type: {
+      type: String,
+      required: true,
+    },
+    senderId: {
+      type: mongoose.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    receiverId: {
+      type: mongoose.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    text: {
+      type: String,
+      required: true,
+    },
+    date:{
+        type:Date,
+        default:Date.now,
+    },
+    seen:{
+      type:Boolean,
+      default:false,
+    
+    }
+  
+  },
+  ]
 });
 
 export const UserPoints = mongoose.model("UserPoints", UserPointsSchema);
