@@ -38,6 +38,10 @@ export const addNotifications = async(req,res,next)=>{
     }
     const uPoints = (await UserPoints.find({user_id:req.user_id}))[0]
 
+    if(uPoints.user_id != req.body.receiverId){
+        return res.status(400).send({ message: `Invalid request reciver mismatch` });
+    }
+
     const new_notif  = [...uPoints.notifications,req.body]
 
     uPoints.notifications = new_notif;
