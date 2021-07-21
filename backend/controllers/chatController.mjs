@@ -74,13 +74,13 @@ export const saveMessage = async (req, res, next) => {
     const notif=  new ChatNotification(req.user_id,receiverId,'You got new message from'+req.user_id) //TODO CHANGE THIS INTO NAME
 
     const uPoints =  (await UserPoints.find({user_id:receiverId}))[0]
-    let newNotif = true
+
 
     //GET LAST UNSEEN
     const sameUserNotifications = uPoints.chat_notifications.filter(n=>n.senderId ==req.user_id)
     const lastDate = sameUserNotifications.reduce((a,b)=>a.date > b.date?a : b)
     console.log(lastDate)
-    
+
     const hour= 1000 * 60 * 60;
     const newNotif = lastDate+hour > notif.date
 
