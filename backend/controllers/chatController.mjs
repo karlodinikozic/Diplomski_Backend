@@ -82,6 +82,9 @@ export const saveMessage = async (req, res, next) => {
       const lastDate = sameUserNotifications.reduce((a,b)=>a.date > b.date?a : b)
       const hour= 1000 * 60 * 60;
       newNotif = lastDate.date+hour > notif.date
+      if(lastDate.seen){
+        newNotif=false
+      }
     }
   
 
@@ -140,7 +143,15 @@ export const createThread = async (req, res, next) => {
       user_2: recipient_id,
       messages: [messageObj],
     });
-    chatThread.save();
+    await chatThread.save();
+
+    const receiverId = chatThread.user_1 == req.user_id ?  chatThread.user_2 :  chatThread.user_1;
+    const notif=  new ChatNotification(req.user_id,receiverId,req.user_id+'Has started a new Chat with you') //TODO CHANGE THIS INTO NAME
+
+    const uPoints =  (await UserPoints.find({user_id:receiverId}))[0]
+    uPoints.chat_notifications.push(notif);
+    await uPoints.save()
+
     return res
       .status(200)
       .send({

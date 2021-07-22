@@ -93,6 +93,10 @@ const userSchema = new Schema({
     type:String,
     required:false,
   },
+  age:{
+    type:Number,
+    required:true,
+  },
   interests:[
     {
      category:{
@@ -126,9 +130,6 @@ userSchema.virtual('fullName').get(()=>{
 
 userSchema.virtual('cityPostal').get(()=>{
     return this.city + ","+ this.zip;
-})
-userSchema.virtual('age').get(()=>{
-
 })
 
 

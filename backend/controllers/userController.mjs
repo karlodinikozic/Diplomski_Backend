@@ -35,6 +35,9 @@ export const createUser = async (req, res, next) => {
 
     user_data.password = await bcrypt.hash(user_data.password, 12);
 
+    user_data.age = calculateAge(user_data.dob)
+    user_data.gender = user_data.gender.toLowerCase();
+
     const user = new User(user_data);
     //SEND EMAIL
     const emailToken = await jwt.sign({ _id: user._id }, EMAIL_SECRET);
@@ -100,21 +103,25 @@ export const updateUser = async (req, res, next) => {
       delete update_data.location
     }
 
-    if(update_data.gallery){
-      const user = await User.findById({_id:id})
-      const set =  update_data.gallery.filter(el=>! _.find(user.gallery,el))
-
-      
-      update_data.gallery=[...set,...user.gallery]
+    if(update_data.dob){
+      update_data.age =calculateAge(update_data.dob)
     }
 
-    if(update_data.interests){
-      const user = await User.findById({_id:id})
-      const set =  update_data.interests.filter(el=>! _.find(user.interests,el))
+    // if(update_data.gallery){
+    //   const user = await User.findById({_id:id})
+    //   const set =  update_data.gallery.filter(el=>! _.find(user.gallery,el))
 
       
-      update_data.interests=[...set,...user.interests]
-    }
+    //   update_data.gallery=[...set,...user.gallery]
+    // }
+
+    // if(update_data.interests){
+    //   const user = await User.findById({_id:id})
+    //   const set =  update_data.interests.filter(el=>! _.find(user.interests,el))
+
+      
+    //   update_data.interests=[...set,...user.interests]
+    // }
 
 
 
