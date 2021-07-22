@@ -7,7 +7,8 @@ export const validateSaveMessage = (obj) => {
 
     const validateSendMessageSchema = Joi.object({
         chat_id:Joi.string().required(),
-        message:Joi.string().required()
+        message:Joi.string().required(),
+        imageUrl:Joi.string()
     })
 
     const {

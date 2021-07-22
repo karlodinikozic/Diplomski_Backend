@@ -74,7 +74,7 @@ export const filterUsersOnMap = async (req, res, next) => {
     }
 
 
-    console.log(helper)
+
     const query = User.find({
       $and: helper,    
     }); 

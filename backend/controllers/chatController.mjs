@@ -9,10 +9,11 @@ import { User } from "../models/User.mjs";
 import { UserPoints } from "../models/UserPoints.mjs";
 
 class MessageObj {
-  constructor(sender, message = " ") {
+  constructor(sender, message = " ",imageUrl=null) {
     this.senderID = sender;
     this.message = message;
     this.date = Date.now();
+    this.imageUrl=imageUrl
   }
 }
 
@@ -57,8 +58,9 @@ export const saveMessage = async (req, res, next) => {
     if (err) {
       return res.status(400).send({ message: `Invalid request ${err}` });
     }
-    const { chat_id, message } = req.body;
-    const messageObj = new MessageObj(req.user_id, message);
+    const { chat_id, message,imageUrl } = req.body;
+    
+    const messageObj = new MessageObj(req.user_id, message,imageUrl);
 
     const chatThread = await ChatThread.findById(chat_id);
     if (chatThread.blockChat) {

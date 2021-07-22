@@ -33,6 +33,10 @@ const ChatThreadSchema = new Schema({
               default: Date.now()
             
             },
+            imageUrl:{
+              type:String,
+              default:null
+            }
         }
     ],
     blockChat:{
