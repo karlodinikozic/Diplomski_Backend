@@ -24,7 +24,7 @@ const io = require("socket.io")(8900, {
     });
     console.log(users)
     //send and get message
-    socket.on("sendMessage", ({ senderId, receiverId, text,chatId }) => {
+    socket.on("sendMessage", ({ senderId, receiverId, text,chatId,imageUrl }) => {
       const user = getUser(receiverId);
       if(user == undefined){
         const reportError = getUser(senderId)
@@ -36,6 +36,7 @@ const io = require("socket.io")(8900, {
       io.to(user.socketId).emit("getMessage", {
         senderId,
         text,
+        imageUrl
       });
       io.to(user.socketId).emit("getNotification",{
         senderId,

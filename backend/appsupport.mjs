@@ -120,7 +120,7 @@ async function addUserPointAfterTime(user_id){
 }
 
 export function calculateAge(dob){
-  const diff = Date.now() - dob.getTime(); 
+  const diff = Date.now() - Date.parse(dob); 
   const ageDate = new Date(diff); 
   return Math.abs(ageDate.getUTCFullYear() - 1970);
 }
