@@ -61,7 +61,7 @@ export const saveMessage = async (req, res, next) => {
     const { chat_id, message,imageUrl } = req.body;
     
     const messageObj = new MessageObj(req.user_id, message,imageUrl);
-
+    console.log(messageObj)
     const chatThread = await ChatThread.findById(chat_id);
     if (chatThread.blockChat) {
       return res
@@ -168,8 +168,10 @@ export const createThread = async (req, res, next) => {
 export const getChatThread = async (req, res, next) => {
   try {
     const chatThread = await ChatThread.findById({ _id: req.chat_id })
-      .slice("messages", 20)
+      .slice("messages", -20)
+   
       .select(["activities", "user_1", "user_2", "blockChat", "userWhoBlocked"])
+    
       .lean()
       .exec();
     //TODO GET ONLY LAST 25 MESSAGES
