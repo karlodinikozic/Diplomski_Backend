@@ -30,7 +30,6 @@ class ChatNotification{
 
 const checkIfChatExists = async (req, res) => {
   try {
-    //TODO MAYBE PersonModel.find({ favouriteFoods: { "$in" : ["sushi"]} }, ...); array style
     const exists_1 = await ChatThread.findOne({
       user_1: req.user_id,
       user_2: req.body.recipient_id,
@@ -71,9 +70,10 @@ export const saveMessage = async (req, res, next) => {
         });
     }
 
-    //TODO CHAT NOTIFICATIONS
     const receiverId = chatThread.user_1 == req.user_id ?  chatThread.user_2 :  chatThread.user_1;
-    const notif=  new ChatNotification(req.user_id,receiverId,'You got new message from'+req.user_id) //TODO CHANGE THIS INTO NAME
+    const user = await User.findById(receiverId)
+
+    const notif=  new ChatNotification(req.user_id,receiverId,'You got new message from'+user.firstName + " "+ user.lastName) 
 
     const uPoints =  (await UserPoints.find({user_id:receiverId}))[0]
 
@@ -133,6 +133,19 @@ export const createThread = async (req, res, next) => {
       return res.status(200).send({ chat_id: exists._id });
     }
 
+    //Check if both liked
+    const sender = await UserPoints({_id:req.user_id})
+    if(! sender.liked.includes(recipient_id) ){
+      return res.status(400).send({ message: `You haven't liked the user with id ${recipient_id}` });
+    }
+
+    const reciver = await UserPoints({_id:recipient_id})
+    if(! reciver.liked.includes(req.user_id) ){
+      return res.status(400).send({ message: `User with id ${receiver_id} hasn't liked you ` }); //TODO ADD NAME
+    }
+
+
+
     //Decrease User Points
     const { error, lifes } = await decreaseUserPoints(res, req.user_id);
     console.log(error);
@@ -148,7 +161,8 @@ export const createThread = async (req, res, next) => {
     await chatThread.save();
 
     const receiverId = chatThread.user_1 == req.user_id ?  chatThread.user_2 :  chatThread.user_1;
-    const notif=  new ChatNotification(req.user_id,receiverId,req.user_id+'Has started a new Chat with you') //TODO CHANGE THIS INTO NAME
+    const user = await User.findById(receiverId)
+    const notif=  new ChatNotification(req.user_id,receiverId,user.firstName+" "+user.lastName+'Has started a new Chat with you')
 
     const uPoints =  (await UserPoints.find({user_id:receiverId}))[0]
     uPoints.chat_notifications.push(notif);
@@ -168,13 +182,13 @@ export const createThread = async (req, res, next) => {
 export const getChatThread = async (req, res, next) => {
   try {
     const chatThread = await ChatThread.findById({ _id: req.chat_id })
-      .slice("messages", -20)
+      .slice("messages", -25)
    
       .select(["activities", "user_1", "user_2", "blockChat", "userWhoBlocked"])
     
       .lean()
       .exec();
-    //TODO GET ONLY LAST 25 MESSAGES
+  
     return res.status(200).send(chatThread);
   } catch (error) {
     return res.status(400).send(error);

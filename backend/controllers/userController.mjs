@@ -171,7 +171,7 @@ export const verifyUserEmail = async (req, res, next) => {
     await user.save();
 
     //CREATING USER POINTS 
-    //TODO CHECK THIS
+
     const uPoints = await new UserPoints({user_id:_id})
     await uPoints.save()
 
@@ -181,7 +181,7 @@ export const verifyUserEmail = async (req, res, next) => {
   }
 };
 
-//TODO CHECK THIS
+
 export const setActive = async (req, res, next) => {
   try {
     const user = await User.findById({ _id: req.params_id });

@@ -88,6 +88,14 @@ const UserPointsSchema = new Schema({
     }
   
   },
+  ],
+  liked:[
+    {
+      type: mongoose.ObjectId,
+      ref: "User",
+      required: true,
+      unique: true,
+    },
   ]
 });
 

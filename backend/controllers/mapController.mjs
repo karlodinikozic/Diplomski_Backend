@@ -19,7 +19,7 @@ export const usersOnMap = async (req, res, next) => {
     }
 
     const { range } = req.query;
-    const query = User.find(); //TODO ADD FILLTERS
+    const query = User.find(); // ADD FILLTERS
 
     const user = await User.findById({ _id: req.user_id });
     const result = await query.circle("lastKnownLocation", {
