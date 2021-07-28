@@ -216,7 +216,6 @@ export const likeUser = async (req, res, next) => {
 
     //Decrease User Points
     const { error, lifes } = await decresePoints(res, req.user_id);
-    console.log(error);
     if (error) {
       return res.status(400).send("Not enough points");
     }
@@ -225,7 +224,7 @@ export const likeUser = async (req, res, next) => {
 
     return res.status(200).send(uPoints);
 
-  } catch (error) {    console.log(error)
+  } catch (error) {   
     res.status(400).send(error);
   }
 };
