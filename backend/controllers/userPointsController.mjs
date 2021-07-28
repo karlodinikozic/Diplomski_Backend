@@ -1,4 +1,5 @@
 import { validateAddNotification } from "../middleware/userPointsValidations.mjs";
+import { decreaseUserPoints  as decresePoints} from "../appsupport.mjs";
 import { UserPoints } from "../models/UserPoints.mjs";
 import {User} from '../models/User.mjs'
 import { default as _ } from "lodash";
@@ -197,7 +198,7 @@ export const likeUser = async (req, res, next) => {
     uPoints.liked.push(like_user_id)
    
 
-    
+    //push notification
     const userthatLiked = await User.findById(req.user_id)
 
     const notif={
@@ -212,6 +213,13 @@ export const likeUser = async (req, res, next) => {
     const new_notif = [...reciverUPoints.notifications, notif];
     reciverUPoints.notifications = new_notif;
 
+
+    //Decrease User Points
+    const { error, lifes } = await decresePoints(res, req.user_id);
+    console.log(error);
+    if (error) {
+      return res.status(400).send("Not enough points");
+    }
     await uPoints.save()
     await reciverUPoints.save()
 
