@@ -134,12 +134,12 @@ export const createThread = async (req, res, next) => {
     }
 
     //Check if both liked
-    const sender = await UserPoints({_id:req.user_id})
+    const sender = await UserPoints.findOne({user_id:req.user_id})
     if(! sender.liked.includes(recipient_id) ){
       return res.status(400).send({ message: `You haven't liked the user with id ${recipient_id}` });
     }
 
-    const reciver = await UserPoints({_id:recipient_id})
+    const reciver = await UserPoints.findOne({user_id:recipient_id})
     if(! reciver.liked.includes(req.user_id) ){
       return res.status(400).send({ message: `User with id ${receiver_id} hasn't liked you ` }); //TODO ADD NAME
     }
