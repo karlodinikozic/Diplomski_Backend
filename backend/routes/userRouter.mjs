@@ -8,6 +8,7 @@ import { checkIDParams,checkAccess } from "../middleware/userValidations.mjs";
 import { findServerUrl } from '../appsupport.mjs';
 import { setUserLocation } from "../controllers/userController.mjs";
 import { forgotPassword } from "../controllers/userController.mjs";
+import { changePassword } from "../controllers/userController.mjs";
 export const router = Router();
 
 const userUrl = (req,res,next)=>{
@@ -17,8 +18,11 @@ const userLocationUrl = (req,res,next)=>{
    req.newUrl = findServerUrl(req,`user`,'auth/checkToken');next();
 }
 
-const userFogotPassword = (req,res,next)=>{
+const userFogotPasswordUrl = (req,res,next)=>{
    req.newUrl = findServerUrl(req,`user/forgotPassword`,'auth/checkToken');next();
+}
+const userChangePasswordUrl = (req,res,next)=>{
+   req.newUrl = findServerUrl(req,`user/changePassword`,'auth/checkToken');next();
 }
 
 const paramEQuserId = (req,res,next)=>{req.params_id=req.user_id;next()}
@@ -46,8 +50,11 @@ router.patch('/userLocation',userLocationUrl,checkAccess,setUserLocation)
 router.get('/user/verifyEmail/:token',verifyUserEmail)
 
 
-// TODO Forgot password Email
-router.post('/user/forgotPassword',userFogotPassword,forgotPassword)
+//FOROGT PASSWORD
+router.post('/user/forgotPassword',userFogotPasswordUrl,forgotPassword)
+
+//UPDATE PASSWORD
+router.patch('/user/changePassword',userChangePasswordUrl,checkAccess,changePassword)
 
 
 

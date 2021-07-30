@@ -48,7 +48,7 @@ export const validateRegisterBody = (obj) => {
     email: Joi.string().email().required(),
     password: Joi.string()
       .pattern(
-        new RegExp("^.*(?=.{8,})(?=.*d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$")
+        new RegExp("^.*(?=.{8,})(?=.*d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$") //!!! CHANGE THIS
       )
       .required(),
     gender: Joi.any().valid("Male", "Female", "Other").required(),
@@ -111,11 +111,22 @@ export const validateUserLocation = (obj) => {
 };
 
 export const validateForgotPassword = (obj) => {
-  const userLocationSchema = Joi.object({
+  const forgotPasswordSchema = Joi.object({
     email: Joi.string().email().required(),
    
   });
-  const { error } = userLocationSchema.validate(obj);
+  const { error } = forgotPasswordSchema.validate(obj);
+
+  return error;
+}
+
+export const validateChangePassword = (obj) => {
+  const changePasswordSceham = Joi.object({
+    oldPassword: Joi.string().required(), //!!! TODO CHANGE REGX
+    newPassword:Joi.string().required()
+   
+  });
+  const { error } = changePasswordSceham.validate(obj);
 
   return error;
 }

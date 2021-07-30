@@ -5,7 +5,9 @@ import { default as _ } from 'lodash';
 export const validateLogin = (obj)=>{
     const loginSchema = Joi.object( {
         email:Joi.string().email().required(),
-        password:Joi.string().pattern(new RegExp('^.*(?=.{8,})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$')).required()
+        password:Joi.string()
+        // .pattern(new RegExp('^.*(?=.{8,})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$'))//!!CHANGE THIS
+        .required()
     })
     const {error}  = loginSchema.validate(obj)
     return error;

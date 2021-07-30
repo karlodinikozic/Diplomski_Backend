@@ -64,6 +64,11 @@ const userSchema = new Schema({
     required:false,
     default:false,
   },
+  changedPassword:{
+    type:Boolean,
+    required:false,
+    default:false,
+  },
   description:{
     type:String,
     required:false

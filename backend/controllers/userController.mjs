@@ -15,6 +15,10 @@ import { calculateAge } from "../appsupport.mjs";
 import { validateUserLocation } from "../middleware/userValidations.mjs";
 import { offsetLocation } from "../appsupport.mjs";
 
+import { default as generatePassword } from "secure-random-password";
+import { validateForgotPassword } from "../middleware/userValidations.mjs";
+import { validateChangePassword } from "../middleware/userValidations.mjs";
+
 export const createUser = async (req, res, next) => {
   try {
     //VALIDATE BODY
@@ -62,6 +66,14 @@ export const readUser = async (req, res, next) => {
     const user = await User.findById(id); //TODO select read fields
     if (!user) {
       return res.status(404).send("User not found");
+    }
+
+    if(req.params_id == req.user_id){
+
+      if(user.changedPassword){
+        user.changedPassword = false;
+        await user.save()
+      }
     }
 
     const data = user.toObject();
@@ -203,25 +215,87 @@ export const setUserLocation = async (req, res, next) => {
     }
 
     //offset location from 200m to 500m
-   const {lat,long} =  offsetLocation(req.body.latitude,req.body.longitude)
+    const { lat, long } = offsetLocation(req.body.latitude, req.body.longitude);
 
-   const user= await User.findById(req.user_id)
+    const user = await User.findById(req.user_id);
 
-   user.lastKnownLocation.coordinates = [lat,long]
-   await user.save()
+    user.lastKnownLocation.coordinates = [lat, long];
+    await user.save();
 
-   return res.status(200).send(user)
+    return res.status(200).send(user);
   } catch (error) {
     res.status(400).send(error);
   }
 };
 
 
-//TODO
-export const forgotPassword = async(req,res,next)=>{
+export const forgotPassword = async (req, res, next) => {
 
-}
-//TODO
-export const changePassword = async(req,res,next)=>{
+  const err = validateForgotPassword(req.body);
+  if (err) {
+    return res.status(400).send({ message: `Invalid request ${err}` });
+  }
+  try {
 
-}
+    const user = await User.findOne({email: req.body.email})
+    if(! user){
+      return res.status(400).send({ message: `Invalid request Email doesn't not exists` });
+    }
+
+    if(!user.email_verified){
+      return res.status(400).send({ message: `Please verify your email first` });
+    }
+  
+    if(!user.changedPassword){
+      return res.status(400).send({ message: `Email was already send with the new password` });
+    }
+
+    const newPass = generatePassword.randomPassword({ characters: [generatePassword.lower, generatePassword.upper, generatePassword.digits] })
+  
+    user.password = await bcrypt.hash(newPass, 12);
+
+    user.changedPassword = true
+
+    const email_message = `<p>Vaša lozinka je uspješno resetirana Nova lozinka je : ${newPass}</p> `;
+    await sendEmail(user.email, email_message);
+
+    await user.save()
+
+    return res.status(200).send("Success");
+  } catch (error) {
+
+    res.status(400).send(error);
+  }
+};
+
+export const changePassword = async (req, res, next) => {
+  
+  try {
+    const err = validateChangePassword(req.body);
+    if (err) {
+      return res.status(400).send({ message: `Invalid request ${err}` });
+    }
+   
+    const {oldPassword,newPassword}=req.body
+  
+
+    const user = await User.findById(req.user_id)
+
+ 
+    //* Check Password
+    const checkPassword = await bcrypt.compare(oldPassword, user.password);
+ 
+    if (!checkPassword) {
+      return res.status(401).send({message:`Invalid password `})
+    }
+
+    user.password = await bcrypt.hash(newPassword, 12);
+    await user.save()
+    
+    return res.status(200).send("Success");
+  } catch (error) {
+    console.log(error)
+    res.status(400).send(error);
+  }
+ 
+};
