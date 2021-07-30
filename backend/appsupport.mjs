@@ -124,3 +124,23 @@ export function calculateAge(dob){
   const ageDate = new Date(diff); 
   return Math.abs(ageDate.getUTCFullYear() - 1970);
 }
+
+export function offsetLocation(lat,long){
+  //radnom number from 200 - 500
+  const meters = Math.floor(Math.random() * 300) + 200;
+  const p_or_m_lat =Math.floor(Math.random() * 2)==0 ? 1 : -1 //+ | -
+  const p_or_m_long =Math.floor(Math.random() * 2)==0 ? 1 : -1 // + | -
+
+// number of km per degree = ~111km (111.32 in google maps, but range varies
+// between 110.567km at the equator and 111.699km at the poles)
+// 1km in degree = 1 / 111.32km = 0.0089
+// 1m in degree = 0.0089 / 1000 = 0.0000089
+ const coef = meters * 0.0000089;
+
+
+ const new_lat = lat + (coef*p_or_m_lat);
+
+ // pi / 180 = 0.018
+ const new_long = long + (coef*p_or_m_long) / Math.cos(lat * 0.018);
+ return {lat:new_lat,long:new_long}
+}

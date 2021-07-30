@@ -12,9 +12,8 @@ import { FRONT_LOCATION } from "../config/config.mjs";
 import { getLocation } from "../appsupport.mjs";
 import { UserPoints } from "../models/UserPoints.mjs";
 import { calculateAge } from "../appsupport.mjs";
-
-
-
+import { validateUserLocation } from "../middleware/userValidations.mjs";
+import { offsetLocation } from "../appsupport.mjs";
 
 export const createUser = async (req, res, next) => {
   try {
@@ -35,7 +34,7 @@ export const createUser = async (req, res, next) => {
 
     user_data.password = await bcrypt.hash(user_data.password, 12);
 
-    user_data.age = calculateAge(user_data.dob)
+    user_data.age = calculateAge(user_data.dob);
     user_data.gender = user_data.gender.toLowerCase();
 
     const user = new User(user_data);
@@ -65,10 +64,9 @@ export const readUser = async (req, res, next) => {
       return res.status(404).send("User not found");
     }
 
+    const data = user.toObject();
+    data["age"] = calculateAge(user.dob);
 
-    const data = user.toObject()
-    data['age'] = calculateAge(user.dob)
-   
     //TODO ADD AGE
     return res.status(200).send(data);
   } catch (error) {
@@ -78,40 +76,36 @@ export const readUser = async (req, res, next) => {
 
 export const updateUser = async (req, res, next) => {
   try {
-
     //VALIDATE BODY
     const err = validateUpdateBody(req.body);
     if (err) {
-
       return res.status(400).send({ message: `Invalid request ${err}` });
     }
-
 
     const id = req.params_id;
     let update_data = req.body;
 
     update_data.completedSetup = true;
- 
-    if (update_data.location) { 
+
+    if (update_data.location) {
       //VALIDATE BODY
-   
+
       const { longitude, latitude } = update_data.location;
       update_data.lastKnownLocation = {
         type: "Point",
         coordinates: [longitude, latitude],
       };
-      delete update_data.location
+      delete update_data.location;
     }
 
-    if(update_data.dob){
-      update_data.age =calculateAge(update_data.dob)
+    if (update_data.dob) {
+      update_data.age = calculateAge(update_data.dob);
     }
 
     // if(update_data.gallery){
     //   const user = await User.findById({_id:id})
     //   const set =  update_data.gallery.filter(el=>! _.find(user.gallery,el))
 
-      
     //   update_data.gallery=[...set,...user.gallery]
     // }
 
@@ -119,24 +113,20 @@ export const updateUser = async (req, res, next) => {
     //   const user = await User.findById({_id:id})
     //   const set =  update_data.interests.filter(el=>! _.find(user.interests,el))
 
-      
     //   update_data.interests=[...set,...user.interests]
     // }
 
-
-
-  
-    const user = await User.findOneAndUpdate({ _id: id },update_data,{new:true})
-
-
+    const user = await User.findOneAndUpdate({ _id: id }, update_data, {
+      new: true,
+    });
 
     return res.status(200).send({
       message: "Succees",
       length: 1,
-      data: user, 
+      data: user,
     });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return res.status(400).send(error);
   }
 };
@@ -170,17 +160,16 @@ export const verifyUserEmail = async (req, res, next) => {
     user.email_verified = true;
     await user.save();
 
-    //CREATING USER POINTS 
+    //CREATING USER POINTS
 
-    const uPoints = await new UserPoints({user_id:_id})
-    await uPoints.save()
+    const uPoints = await new UserPoints({ user_id: _id });
+    await uPoints.save();
 
     return res.redirect(FRONT_LOCATION);
   } catch (error) {
     res.status(400).send(error.message);
   }
 };
-
 
 export const setActive = async (req, res, next) => {
   try {
@@ -203,3 +192,36 @@ export const setActive = async (req, res, next) => {
     res.status(400).send(error);
   }
 };
+
+export const setUserLocation = async (req, res, next) => {
+  try {
+    //VALIDATE BODY
+    const err = validateUserLocation(req.body);
+
+    if (err) {
+      return res.status(400).send({ message: `Invalid request ${err}` });
+    }
+
+    //offset location from 200m to 500m
+   const {lat,long} =  offsetLocation(req.body.latitude,req.body.longitude)
+
+   const user= await User.findById(req.user_id)
+
+   user.lastKnownLocation.coordinates = [lat,long]
+   await user.save()
+
+   return res.status(200).send(user)
+  } catch (error) {
+    res.status(400).send(error);
+  }
+};
+
+
+//TODO
+export const forgotPassword = async(req,res,next)=>{
+
+}
+//TODO
+export const changePassword = async(req,res,next)=>{
+
+}
