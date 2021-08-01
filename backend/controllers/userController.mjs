@@ -54,10 +54,11 @@ export const createUser = async (req, res, next) => {
     const emailUrl = `${req.protocol}://${req.get("host")}${
       req.originalUrl
     }verifyEmail/${emailToken}`;
+    console.log(emailUrl)
     const email_message = `<p>Molim vas kliknite ovdje kako bi ste potvrdili vaš email</p><a href="${emailUrl}">Potvrdi email</a> `;
     await sendEmail(user.email, email_message);
 
-     await user.save();
+     //await user.save();
     console.log(user)
     return res.status(200).send({ message: "Success" });
   } catch (error) {
