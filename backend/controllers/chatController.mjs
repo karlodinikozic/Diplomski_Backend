@@ -18,13 +18,14 @@ class MessageObj {
 }
 
 class ChatNotification{
-  constructor(sender,receiver,text) {
+  constructor(sender,receiver,text,chat_id) {
     this.type=0;
     this.senderId = sender;
     this.receiverId = receiver;
     this.text = text;
     this.date = Date.now();
     this.seen = false;
+    this.chat_id = chat_id
   }
 }
 
@@ -73,7 +74,7 @@ export const saveMessage = async (req, res, next) => {
     const receiverId = chatThread.user_1 == req.user_id ?  chatThread.user_2 :  chatThread.user_1;
     const user = await User.findById(req.user_id)
 
-    const notif=  new ChatNotification(req.user_id,receiverId,'You got new message from'+user.firstName + " "+ user.lastName) 
+    const notif=  new ChatNotification(req.user_id,receiverId,'You got new message from'+user.firstName + " "+ user.lastName,chat_id) 
 
     const uPoints =  (await UserPoints.find({user_id:receiverId}))[0]
 
@@ -162,7 +163,7 @@ export const createThread = async (req, res, next) => {
 
     const receiverId = chatThread.user_1 == req.user_id ?  chatThread.user_2 :  chatThread.user_1;
     const user = await User.findById(receiverId)
-    const notif=  new ChatNotification(req.user_id,receiverId,user.firstName+" "+user.lastName+'Has started a new Chat with you')
+    const notif=  new ChatNotification(req.user_id,receiverId,user.firstName+" "+user.lastName+'Has started a new Chat with you',chatThread._id)
 
     const uPoints =  (await UserPoints.find({user_id:receiverId}))[0]
     uPoints.chat_notifications.push(notif);
