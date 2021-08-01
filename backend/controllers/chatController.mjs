@@ -71,7 +71,7 @@ export const saveMessage = async (req, res, next) => {
     }
 
     const receiverId = chatThread.user_1 == req.user_id ?  chatThread.user_2 :  chatThread.user_1;
-    const user = await User.findById(receiverId)
+    const user = await User.findById(req.user_id)
 
     const notif=  new ChatNotification(req.user_id,receiverId,'You got new message from'+user.firstName + " "+ user.lastName) 
 

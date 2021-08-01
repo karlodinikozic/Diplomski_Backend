@@ -209,6 +209,7 @@ export const likeUser = async (req, res, next) => {
 
   try {
     const like_user_id = req.params.id;
+  
     
     if (_.isNull(like_user_id) || _.isUndefined(like_user_id)) {
       return res.status(400).send({ message: `Notification id is missing` });
@@ -226,7 +227,7 @@ export const likeUser = async (req, res, next) => {
     }
 
     uPoints.liked.push(like_user_id)
-   
+
 
     //push notification
     const userthatLiked = await User.findById(req.user_id)
@@ -239,10 +240,10 @@ export const likeUser = async (req, res, next) => {
     }
  
     const reciverUPoints = (await UserPoints.find({ user_id: like_user_id }))[0];
-
+    console.log(reciverUPoints)
     const new_notif = [...reciverUPoints.notifications, notif];
     reciverUPoints.notifications = new_notif;
-
+    
 
     //Decrease User Points
     const { error, lifes } = await decresePoints(res, req.user_id);
