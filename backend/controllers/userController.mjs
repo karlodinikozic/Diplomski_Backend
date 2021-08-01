@@ -272,6 +272,7 @@ export const changePassword = async (req, res, next) => {
   
   try {
     const err = validateChangePassword(req.body);
+    
     if (err) {
       return res.status(400).send({ message: `Invalid request ${err}` });
     }

@@ -6,7 +6,7 @@ import { default as _ } from 'lodash';
 
 export const validateRangeFilter = (obj) =>{
     const rangeSchema = Joi.object({
-      range:Joi.number().min(0.01).max(500),
+      range:Joi.number().min(0.01).max(1500),
     })
   
     const {error}  = rangeSchema.validate(obj)
@@ -16,7 +16,7 @@ export const validateRangeFilter = (obj) =>{
 
 export const validateFilterBody = (obj) =>{
   const filterSchema = Joi.object({
-    range:Joi.number().min(5).max(500).required(),
+    range:Joi.number().min(5).max(1500).required(),
     age:Joi.object({
       min:Joi.number().required(),
       max:Joi.number().required()

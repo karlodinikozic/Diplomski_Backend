@@ -70,10 +70,11 @@ export const filterUsersOnMap = async (req, res, next) => {
 
     if(! _.isUndefined(req.body.interests)){
         let arr = req.body.interests.map(i => i.interest)
-        helper.push( {'interests.interest':{$all:arr}})
+        console.log(arr)
+        helper.push( {'interests.interest':{$in:[...arr]}})
     }
 
-
+ 
 
     const query = User.find({
       $and: helper,    
