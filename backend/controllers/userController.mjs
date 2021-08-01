@@ -254,7 +254,7 @@ export const forgotPassword = async (req, res, next) => {
         .send({ message: `Please verify your email first` });
     }
 
-    if (!user.changedPassword) {
+    if (user.changedPassword) {
       return res
         .status(400)
         .send({ message: `Email was already send with the new password` });
