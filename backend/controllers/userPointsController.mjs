@@ -21,6 +21,7 @@ export const getUserPoints = async (req, res, next) => {
       if( uPoints[0].lifes + numOfHeartsNeed >= 5){
         uPoints[0].nextHeartAt =null
         uPoints[0].lifes = 5;
+        await uPoints.save()
       }
       else{
       
