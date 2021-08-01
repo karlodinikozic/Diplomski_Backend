@@ -13,20 +13,24 @@ export const getUserPoints = async (req, res, next) => {
 
     //CHECK nextHeartAt time
     let oldTime = new Date(uPoints[0].nextHeartAt)
-    if(oldTime< Date.now()){
+    if(oldTime< Date.now() && uPoints[0].lifes<5){
 
+      
       //calucel how many hears to add 
       let timeDiff = Date.now() - oldTime
       let numOfHeartsNeed = Math.floor(timeDiff/LIFE_REFILL_TIME)
+
       if( uPoints[0].lifes + numOfHeartsNeed >= 5){
+        
         uPoints[0].nextHeartAt =null
         uPoints[0].lifes = 5;
-        await uPoints.save()
+        await uPoints[0].save()
+
       }
       else{
       
         uPoints[0].lifes =  uPoints[0].lifes+numOfHeartsNeed;
-        await uPoints.save()
+        await uPoints[0].save()
         addUserPointAfterTime(req.user_id)
       }
       
