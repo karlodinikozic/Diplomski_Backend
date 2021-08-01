@@ -90,7 +90,7 @@ export const filterUsersOnMap = async (req, res, next) => {
       spherical: true,
     });
   
-    return res.status(200).send(result);
+    return res.status(200).send(result.filter(i=>i._id!=req.user_id));
   } catch (error) {
     console.log(error);
     res.status(400).send(error);
