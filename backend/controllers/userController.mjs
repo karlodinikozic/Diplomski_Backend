@@ -183,7 +183,7 @@ export const verifyUserEmail = async (req, res, next) => {
   }
 };
 
-export const setActive = async (req, res, next) => {
+export const setActive = async (req, res, next) => { 
   try {
     const user = await User.findById({ _id: req.params_id });
 

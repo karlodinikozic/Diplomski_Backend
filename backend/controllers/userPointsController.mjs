@@ -16,15 +16,17 @@ export const getUserPoints = async (req, res, next) => {
 
 export const decreaseUserPoints = async (req, res, next) => {
   try {
-    const uPoints = await UserPoints.find({ user_id: req.user_id });
-    let lifes = uPoints[0].lifes;
-    lifes--;
-    if (lifes < 0) {
-      lifes = 0;
-    }
-    uPoints[0].lifes = lifes;
-    await uPoints[0].save();
-    return res.status(200).send(uPoints[0]);
+     //Decrease User Points
+  
+     const { error, lifes } = await decresePoints(res, req.user_id);
+     if (error) {
+       return res.status(400).send("Not enough points");
+     }
+     const uPoints = (await UserPoints.find({ user_id: req.user_id }))[0];
+
+
+     return res.status(200).send(uPoints)
+
   } catch (error) {
     res.status(400).send(error);
   }
