@@ -60,7 +60,10 @@ const userSchema = new Schema({
     required: false,
     default:[]
   },
-  
+  default:{
+    type:"Point",
+    coordinates:[]
+  }
   },
   email_verified:{
     type:Boolean,
