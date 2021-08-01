@@ -18,6 +18,7 @@ import { offsetLocation } from "../appsupport.mjs";
 import { default as generatePassword } from "secure-random-password";
 import { validateForgotPassword } from "../middleware/userValidations.mjs";
 import { validateChangePassword } from "../middleware/userValidations.mjs";
+import { SERVER_LOCATION } from "../config/config.mjs";
 
 export const createUser = async (req, res, next) => {
   try {
@@ -51,10 +52,7 @@ export const createUser = async (req, res, next) => {
     //SEND EMAIL
     const emailToken = await jwt.sign({ _id: user._id }, EMAIL_SECRET);
 
-    const emailUrl = `${req.protocol}://${req.get("host")}${
-      req.originalUrl
-    }`+'verifyEmail/'+emailToken;
-    console.log(emailUrl)
+    const emailUrl = SERVER_LOCATION+ "user/verifyEmail/"+emailToken
     const email_message = `<p>Molim vas kliknite ovdje kako bi ste potvrdili vaš email</p><a href="${emailUrl}">Potvrdi email</a> `;
     await sendEmail(user.email, email_message);
 
