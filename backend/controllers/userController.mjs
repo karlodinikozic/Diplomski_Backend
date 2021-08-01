@@ -109,7 +109,7 @@ export const updateUser = async (req, res, next) => {
       const { longitude, latitude } = update_data.location;
       update_data.lastKnownLocation = {
         type: "Point",
-        coordinates: [longitude, latitude],
+        coordinates: [longitude,latitude ],
       };
       delete update_data.location;
     }
@@ -199,7 +199,7 @@ export const setActive = async (req, res, next) => {
 
       user.lastKnownLocation = {
         type: "Point",
-        coordinates: [longitude, latitude],
+        coordinates: [latitude,longitude ],
       };
     }
 
