@@ -61,7 +61,7 @@ const userSchema = new Schema({
     default:[]
   },
   default:{
-    type:"Point",
+    type:["Point"],
     coordinates:[]
   }
   },
