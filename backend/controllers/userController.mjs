@@ -187,7 +187,7 @@ export const setActive = async (req, res, next) => {
   try {
     const user = await User.findById({ _id: req.params_id });
 
-    if (_.isNull(user.lastKnownLocation )) {
+    if (user.lastKnownLocation.coordinates.length==0) {
       const { longitude, latitude } = await getLocation(user.city, user.zip);
 
       user.lastKnownLocation = {

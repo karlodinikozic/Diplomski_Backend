@@ -58,8 +58,9 @@ const userSchema = new Schema({
   coordinates: {
     type: [Number],
     required: false,
+    default:[]
   },
-  default:null
+  
   },
   email_verified:{
     type:Boolean,
