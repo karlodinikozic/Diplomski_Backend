@@ -100,7 +100,7 @@ export async function decreaseUserPoints(res,user_id){
  
 }
 
-async function addUserPointAfterTime(user_id){
+export async function addUserPointAfterTime(user_id){
   
   timeOut=null;
   const uPoints = await UserPoints.find({user_id:user_id})

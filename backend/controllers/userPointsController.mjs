@@ -3,10 +3,33 @@ import { decreaseUserPoints  as decresePoints} from "../appsupport.mjs";
 import { UserPoints } from "../models/UserPoints.mjs";
 import {User} from '../models/User.mjs'
 import { default as _ } from "lodash";
+import { LIFE_REFILL_TIME } from "../config/config.mjs";
+import { addUserPointAfterTime } from "../appsupport.mjs";
 
 export const getUserPoints = async (req, res, next) => {
   try {
     const uPoints = await UserPoints.find({ user_id: req.user_id });
+
+
+    //CHECK nextHeartAt time
+    let oldTime = new Date(uPoints[0].nextHeartAt)
+    if(oldTime< Date.now()){
+
+      //calucel how many hears to add 
+      let timeDiff = Date.now() - oldTime
+      let numOfHeartsNeed = Math.floor(timeDiff/LIFE_REFILL_TIME)
+      if( uPoints[0].lifes + numOfHeartsNeed >= 5){
+        uPoints[0].nextHeartAt =null
+        uPoints[0].lifes = 5;
+      }
+      else{
+      
+        uPoints[0].lifes =  uPoints[0].lifes+numOfHeartsNeed;
+        await uPoints.save()
+        addUserPointAfterTime(req.user_id)
+      }
+      
+    }
 
     return res.status(200).send(uPoints[0]);
   } catch (error) {
