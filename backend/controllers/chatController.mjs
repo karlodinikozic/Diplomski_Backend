@@ -21,7 +21,7 @@ class ChatNotification{
   constructor(sender,receiver,text) {
     this.type=0;
     this.senderId = sender;
-    this.receiverId = sender;
+    this.receiverId = receiver;
     this.text = text;
     this.date = Date.now();
     this.seen = false;
