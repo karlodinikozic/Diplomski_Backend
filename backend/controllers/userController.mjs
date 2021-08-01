@@ -42,6 +42,12 @@ export const createUser = async (req, res, next) => {
     user_data.gender = user_data.gender.toLowerCase();
 
     const user = new User(user_data);
+
+    user.lastKnownLocation = {
+      type: "Point",
+      coordinates:[0,0]
+    };
+
     //SEND EMAIL
     const emailToken = await jwt.sign({ _id: user._id }, EMAIL_SECRET);
 
@@ -51,7 +57,7 @@ export const createUser = async (req, res, next) => {
     const email_message = `<p>Molim vas kliknite ovdje kako bi ste potvrdili vaš email</p><a href="${emailUrl}">Potvrdi email</a> `;
     await sendEmail(user.email, email_message);
 
-    await user.save();
+     await user.save();
 
     return res.status(200).send({ message: "Success" });
   } catch (error) {
@@ -68,11 +74,10 @@ export const readUser = async (req, res, next) => {
       return res.status(404).send("User not found");
     }
 
-    if(req.params_id == req.user_id){
-
-      if(user.changedPassword){
+    if (req.params_id == req.user_id) {
+      if (user.changedPassword) {
         user.changedPassword = false;
-        await user.save()
+        await user.save();
       }
     }
 
@@ -183,11 +188,11 @@ export const verifyUserEmail = async (req, res, next) => {
   }
 };
 
-export const setActive = async (req, res, next) => { 
+export const setActive = async (req, res, next) => {
   try {
     const user = await User.findById({ _id: req.params_id });
 
-    if (user.lastKnownLocation.coordinates.length==0) {
+    if (user.lastKnownLocation.coordinates[0] == 0 && user.lastKnownLocation.coordinates[1] ==0) {
       const { longitude, latitude } = await getLocation(user.city, user.zip);
 
       user.lastKnownLocation = {
@@ -228,75 +233,79 @@ export const setUserLocation = async (req, res, next) => {
   }
 };
 
-
 export const forgotPassword = async (req, res, next) => {
-
   const err = validateForgotPassword(req.body);
   if (err) {
     return res.status(400).send({ message: `Invalid request ${err}` });
   }
   try {
-
-    const user = await User.findOne({email: req.body.email})
-    if(! user){
-      return res.status(400).send({ message: `Invalid request Email doesn't not exists` });
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      return res
+        .status(400)
+        .send({ message: `Invalid request Email doesn't not exists` });
     }
 
-    if(!user.email_verified){
-      return res.status(400).send({ message: `Please verify your email first` });
-    }
-  
-    if(!user.changedPassword){
-      return res.status(400).send({ message: `Email was already send with the new password` });
+    if (!user.email_verified) {
+      return res
+        .status(400)
+        .send({ message: `Please verify your email first` });
     }
 
-    const newPass = generatePassword.randomPassword({ characters: [generatePassword.lower, generatePassword.upper, generatePassword.digits] })
-  
+    if (!user.changedPassword) {
+      return res
+        .status(400)
+        .send({ message: `Email was already send with the new password` });
+    }
+
+    const newPass = generatePassword.randomPassword({
+      characters: [
+        generatePassword.lower,
+        generatePassword.upper,
+        generatePassword.digits,
+      ],
+    });
+
     user.password = await bcrypt.hash(newPass, 12);
 
-    user.changedPassword = true
+    user.changedPassword = true;
 
     const email_message = `<p>Vaša lozinka je uspješno resetirana Nova lozinka je : ${newPass}</p> `;
     await sendEmail(user.email, email_message);
 
-    await user.save()
+    await user.save();
 
     return res.status(200).send("Success");
   } catch (error) {
-
     res.status(400).send(error);
   }
 };
 
 export const changePassword = async (req, res, next) => {
-  
   try {
     const err = validateChangePassword(req.body);
-    
+
     if (err) {
       return res.status(400).send({ message: `Invalid request ${err}` });
     }
-   
-    const {oldPassword,newPassword}=req.body
-  
 
-    const user = await User.findById(req.user_id)
+    const { oldPassword, newPassword } = req.body;
 
- 
+    const user = await User.findById(req.user_id);
+
     //* Check Password
     const checkPassword = await bcrypt.compare(oldPassword, user.password);
- 
+
     if (!checkPassword) {
-      return res.status(401).send({message:`Invalid password `})
+      return res.status(401).send({ message: `Invalid password ` });
     }
 
     user.password = await bcrypt.hash(newPassword, 12);
-    await user.save()
-    
+    await user.save();
+
     return res.status(200).send("Success");
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(400).send(error);
   }
- 
 };
