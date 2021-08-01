@@ -85,6 +85,11 @@ const UserPointsSchema = new Schema({
       type:Boolean,
       default:false,
     
+    },
+    chat_id:{
+      type: mongoose.ObjectId,
+      ref: "MessageThread",
+      required: true,
     }
   
   },
