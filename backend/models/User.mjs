@@ -52,7 +52,8 @@ const userSchema = new Schema({
     type: {
     type: String, // Don't do `{ location: { type: String } }`
     enum: ['Point'], // 'location.type' must be 'Point'
-    required: false
+    required: false,
+    default:false
   },
   coordinates: {
     type: [Number],
