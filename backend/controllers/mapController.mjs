@@ -90,6 +90,10 @@ export const filterUsersOnMap = async (req, res, next) => {
       radius: range / 6378.1,
       spherical: true,
     });
+
+    //TODO DISTANCE 
+
+    //REMOVE DISLIKE USERs
   
     return res.status(200).send(result.filter(i=>i._id!=req.user_id));
   } catch (error) {

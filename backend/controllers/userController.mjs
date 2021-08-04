@@ -195,11 +195,11 @@ export const setActive = async (req, res, next) => {
     const user = await User.findById({ _id: req.params_id });
 
     if (user.lastKnownLocation.coordinates[0] == 0 && user.lastKnownLocation.coordinates[1] ==0) {
-      const { longitude, latitude } = await getLocation(user.city, user.zip);
-
+      const { latitude,longitude  } = await getLocation(user.city, user.zip);
+      const {lat,long  } =  offsetLocation(latitude,longitude)
       user.lastKnownLocation = {
         type: "Point",
-        coordinates: [latitude,longitude ],
+        coordinates: [lat,long ],
       };
     }
 
