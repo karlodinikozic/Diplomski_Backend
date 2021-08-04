@@ -145,12 +145,12 @@ export function offsetLocation(lat,long){
 // between 110.567km at the equator and 111.699km at the poles)
 // 1km in degree = 1 / 111.32km = 0.0089
 // 1m in degree = 0.0089 / 1000 = 0.0000089
- const coef_lat = meters_modulo_lat * 0.0000089;
- const coef_long = meters_modulo_long * 0.0000089;
+ const coef= meters_modulo_lat * 0.0000089;
 
 
- const new_lat = lat + (coef_lat*p_or_m_lat_modulo);
-  let new_long = long + (coef_long*p_or_m_long_modulo);
+
+ const new_lat = lat + (coef*p_or_m_lat_modulo);
+  let new_long = long + (coef*p_or_m_long_modulo);
  // pi / 180 = 0.018
   new_long = new_long / Math.cos(lat * 0.018);
  return {lat:new_lat,long:new_long}
