@@ -80,8 +80,6 @@ export const readUser = async (req, res, next) => {
       }
     }
 
-    const data = user.toObject();
-    data["age"] = calculateAge(user.dob);
 
     //TODO ADD AGE
     return res.status(200).send(data);
