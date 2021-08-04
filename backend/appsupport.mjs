@@ -150,8 +150,7 @@ export function offsetLocation(lat,long){
 
 
  const new_lat = lat + (coef*p_or_m_lat_modulo);
-  let new_long = long + (coef*p_or_m_long_modulo);
  // pi / 180 = 0.018
-  new_long = new_long / Math.cos(lat * 0.018);
+ const new_long = long + (coef*p_or_m_long) / Math.cos(lat * 0.018);
  return {lat:new_lat,long:new_long}
 }
