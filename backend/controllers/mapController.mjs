@@ -46,7 +46,7 @@ export const filterUsersOnMap = async (req, res, next) => {
 
     let helper = []
     if(! _.isUndefined(req.body.age)){
-        helper.push({age:{$gt:req.body.age.min,$lt:req.body.age.max}}) 
+        helper.push({age:{$gte:req.body.age.min,$lte:req.body.age.max}}) 
 
     }
 
