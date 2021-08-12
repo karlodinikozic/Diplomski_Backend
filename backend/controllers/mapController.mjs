@@ -28,7 +28,10 @@ export const usersOnMap = async (req, res, next) => {
       spherical: true,
     });
 
-    return res.status(200).send(result);
+
+    const results_with_distance = calculateDistance(user.lastKnownLocation.coordinates,result)
+
+    return res.status(200).send(results_with_distance);
   } catch (error) {
     console.log(error);
     res.status(400).send(error);
@@ -94,10 +97,47 @@ export const filterUsersOnMap = async (req, res, next) => {
     //TODO DISTANCE 
 
     //REMOVE DISLIKE USERs
-  
-    return res.status(200).send(result.filter(i=>i._id!=req.user_id));
+    const results_with_distance = calculateDistance(user.lastKnownLocation.coordinates,result)
+    return res.status(200).send(results_with_distance.filter(i=>i._id!=req.user_id));
   } catch (error) {
     console.log(error);
     res.status(400).send(error);
   }
 };
+
+
+const calculateDistance = (userLocation,arrOfPeople)=>{
+  function deg2rad(deg) {
+    return deg * (Math.PI/180)
+  }
+
+  function getDistanceFromLatLonInKm(mk1,mk2) {
+   
+
+      var R = 6371; // Radius of the Earth in km
+      var rlat1 = mk1[0] * (Math.PI/180); // Convert degrees to radians
+      var rlat2 = mk2[0]* (Math.PI/180); // Convert degrees to radians
+      var difflat = rlat2-rlat1; // Radian difference (latitudes)
+      var difflon = (mk2[1]-mk1[1]) * (Math.PI/180); // Radian difference (longitudes)
+
+      var d = 2 * R * Math.asin(Math.sqrt(Math.sin(difflat/2)*Math.sin(difflat/2)+Math.cos(rlat1)*Math.cos(rlat2)*Math.sin(difflon/2)*Math.sin(difflon/2)));
+      return d;
+  }
+  
+
+  const distanceArr = arrOfPeople.map(p=>{
+ 
+
+    
+    let distance =  getDistanceFromLatLonInKm(userLocation,p.lastKnownLocation.coordinates)
+   p= p.toObject()
+    p.distance= distance
+  
+    return p
+  })
+
+
+  return distanceArr
+
+
+}
