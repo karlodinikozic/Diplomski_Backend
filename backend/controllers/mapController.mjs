@@ -20,18 +20,25 @@ export const usersOnMap = async (req, res, next) => {
 
     const { range } = req.query;
     const query = User.find(); // ADD FILLTERS
-
+ 
     const user = await User.findById({ _id: req.user_id });
-    const result = await query.circle("lastKnownLocation", {
-      center: user.lastKnownLocation.coordinates,
-      radius: range / 6378.1,
-      spherical: true,
-    });
+
+    //TODO FIX RANGE
+
+
+    const users = await User.find({}) //all
+    // const result = await query.circle("lastKnownLocation", {
+    //   center: user.lastKnownLocation.coordinates,
+    //   radius: range / 6371.1,
+    //   spherical: true,
+    // });
+
+
 
     const results_with_distance = calculateDistance(
       user.lastKnownLocation.coordinates,
-      result
-    );
+      users
+    ).filter(i=> i.distance <= range);
 
     return res.status(200).send(results_with_distance);
   } catch (error) {
@@ -70,7 +77,7 @@ export const filterUsersOnMap = async (req, res, next) => {
 
     if (!_.isUndefined(req.body.interests)) {
       let arr = req.body.interests.map((i) => i.interest);
-      console.log(arr);
+     
       helper.push({ "interests.interest": { $in: [...arr] } });
     }
 
@@ -82,19 +89,22 @@ export const filterUsersOnMap = async (req, res, next) => {
     const user = await User.findById({ _id: req.user_id });
 
     const { range } = req.body;
-    const result = await query.circle("lastKnownLocation", {
-      center: user.lastKnownLocation.coordinates,
-      radius: range / 6378.1,
-      spherical: true,
-    });
+
+    const result = await query.exec() //all
+    
+    // const result = await query.circle("lastKnownLocation", {
+    //   center: user.lastKnownLocation.coordinates,
+    //   radius: range / 6378.1,
+    //   spherical: true,
+    // });
 
     //TODO DISTANCE
 
     //REMOVE DISLIKE USERs
     const results_with_distance = calculateDistance(
       user.lastKnownLocation.coordinates,
-      result
-    );
+      result,true
+    ).filter(i=> i.distance <= range);;
     return res
       .status(200)
       .send(results_with_distance.filter((i) => i._id != req.user_id));
@@ -104,13 +114,13 @@ export const filterUsersOnMap = async (req, res, next) => {
   }
 };
 
-const calculateDistance = (userLocation, arrOfPeople) => {
+const calculateDistance = (userLocation, arrOfPeople,isObject=false) => {
   function deg2rad(deg) {
     return deg * (Math.PI / 180);
   }
 
   function getDistanceFromLatLonInKm(mk1, mk2) {
-    var R = 6371; // Radius of the Earth in km
+    var R = 6371.1; // Radius of the Earth in km
     var rlat1 = mk1[0] * (Math.PI / 180); // Convert degrees to radians
     var rlat2 = mk2[0] * (Math.PI / 180); // Convert degrees to radians
     var difflat = rlat2 - rlat1; // Radian difference (latitudes)
@@ -136,7 +146,10 @@ const calculateDistance = (userLocation, arrOfPeople) => {
       userLocation,
       p.lastKnownLocation.coordinates
     );
-    p = p.toObject();
+    if(!isObject){
+      p = p.toObject();
+    
+    }
     p.distance = distance;
 
     return p;
@@ -148,18 +161,12 @@ const calculateDistance = (userLocation, arrOfPeople) => {
 export const findSomeOne = async (req, res, next) => {
   try {
     //make range
-    const range = 1000;
+    const range = 200;
 
     const user = await User.findById({ _id: req.user_id });
 
-    const user_interests = user.interests;
-
     const query = User.find(); // ADD FILLTERS
-    const users_results = await query.circle("lastKnownLocation", {
-      center: user.lastKnownLocation.coordinates,
-      radius: range / 6378.1,
-      // spherical: true,
-    });
+    const users_results = await User.find({}) //all
 
     //get only unique categories
     const user_categories = new Set();
@@ -168,20 +175,22 @@ export const findSomeOne = async (req, res, next) => {
       user_categories.add(c.category);
     });
 
-    const search_user_Arr = [];
-    users_results
-      .filter((i) => i._id != user._id)
-      .forEach((u) => {
+    const results_with_distance=  calculateDistance(user.lastKnownLocation.coordinates,
+      users_results).filter(i=> i.distance <= range);
 
+    const search_user_Arr = [];
+
+
+    results_with_distance
+    .filter((i) =>!_.isEqual(i._id,user._id))//REMOVE MySelf
+      .forEach((u) => {
         const sum_arr = [];
 
         user_categories.forEach((cat) => {
-
           const user_interest_cat_arr = user.interests
             .filter((i) => i.category == cat)
             .map((i) => i.interest);
 
-          
           const search_user_intres_cat_arr = u.interests
             .filter((i) => i.category == cat)
             .map((i) => i.interest);
@@ -210,47 +219,43 @@ export const findSomeOne = async (req, res, next) => {
             sum += to_05;
           }
 
-          sum_arr.push ( sum / max);
+          sum_arr.push(sum / max);
         });
-       
-        let score = sum_arr.reduce((a, b) => a + b, 0)
-     
+
+        let score = sum_arr.reduce((a, b) => a + b, 0);
 
         // +1
-        score = score / sum_arr.length
+        score = score / sum_arr.length;
 
+        //age udaljenost od središta + 1
+        score +=
+          1 - Math.abs(user.age - u.age) / 15 < 0
+            ? 0
+            : 1 - Math.abs(user.age - u.age) / 15;
 
+        //sexsual orientation  različit spol  && orijentacija +1  , bisesksual +0.5 /+1
+        let helper = 0;
+        if (user.sexualOrientation == u.sexualOrientation) {
+          helper++;
+        } else if (user.sexualOrientation == 2 || u.sexualOrientation == 2) {
+          helper += 0.5;
+        }
+        if (user.gender == u.gender) {
+          helper++;
+        }
+        //TODO ADD SEXSUAL INTEREST
+        score += helper / 2;
+
+        let search_user = u
+        search_user.score = score / 3; // max score 1 , 1 point for categories , 1 for age , 1 for sexsual
      
-  //age udaljenost od središta + 1
-  score += 1- (Math.abs(user.age - u.age)/15) <0 ? 0:1- (Math.abs(user.age - u.age)/15) 
-
-  //sexsual orientation  različit spol  && orijentacija +1  , bisesksual +0.5 /+1
-        let helper = 0
-  if(user.sexualOrientation == u.sexualOrientation){
-      helper++;
-    }
-  else if(user.sexualOrientation == 2 || u.sexualOrientation == 2){
-    helper+=0.5
-  }
-    if(user.gender == u.gender){
-      helper++
-    }
-    //TODO ADD SEXSUAL INTEREST 
-    score+= (helper/2)
-    
-  let search_user  = u.toObject()
-  search_user.score = (score/3); // max score 1 , 1 point for categories , 1 for age , 1 for sexsual
-  search_user_Arr.push(search_user)
+        search_user_Arr.push(search_user);
       });
-
-
-      return res.status(200).send(search_user_Arr)
-     
-
+    
+    //TODO REMOVE BLOCKED
+    return res.status(200).send(search_user_Arr);
   } catch (error) {
     console.log(error);
     res.status(400).send(error);
   }
-
- 
 };
