@@ -11,6 +11,7 @@ import { chatNotificationSeen } from "../controllers/userPointsController.mjs";
 import { deleteNotification } from "../controllers/userPointsController.mjs";
 import { deleteChatNotification } from "../controllers/userPointsController.mjs";
 import { likeUser } from "../controllers/userPointsController.mjs";
+import { dislikeUser } from "../controllers/userPointsController.mjs";
 
 
 export const router = Router();
@@ -19,6 +20,7 @@ const userPointsDecreaseUrl = (req,res,next)=>{req.newUrl = findServerUrl(req,`u
 const userPointsaddNotificationUrl = (req,res,next)=>{req.newUrl = findServerUrl(req,`userPoints/notification`,'auth/checkToken');next();}
 const userPointsaddChatNotificationUrl = (req,res,next)=>{req.newUrl = findServerUrl(req,`userPoints/chatNotification`,'auth/checkToken');next();}
 const userPointsLikeUrl = (req,res,next)=>{req.newUrl = findServerUrl(req,`userPoints/like`,'auth/checkToken');next();}
+const userPointsDislikeUrl = (req,res,next)=>{req.newUrl = findServerUrl(req,`userPoints/dislike`,'auth/checkToken');next();}
 
 
 
@@ -33,6 +35,7 @@ router.get('/userPoints/notification/:id',userPointsaddNotificationUrl,checkAcce
 router.get('/userPoints/chatNotification/:id',userPointsaddChatNotificationUrl,checkAccess,chatNotificationSeen)
 
 router.get('/userPoints/like/:id',userPointsLikeUrl,checkAccess,likeUser)
+router.get('/userPoints/dislike/:id',userPointsDislikeUrl,checkAccess,dislikeUser)
 
 router.delete('/userPoints/notification/:id',userPointsaddNotificationUrl,checkAccess,deleteNotification)
 router.delete('/userPoints/chatNotification/:id',userPointsaddChatNotificationUrl,checkAccess,deleteChatNotification)

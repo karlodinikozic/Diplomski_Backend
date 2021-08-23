@@ -221,9 +221,15 @@ export const likeUser = async (req, res, next) => {
    
     const uPoints = (await UserPoints.find({ user_id: req.user_id }))[0];
     
+
     //check if is already liked
     if(uPoints.liked.includes(like_user_id)){
       return res.status(400).send({ message: `User already liked` });
+    }
+
+    //check if is in disliked
+    if(uPoints.dislike.includes(like_user_id)){
+      uPoints.dislike = uPoints.dislike.filter(i=> i!=like_user_id)
     }
 
     uPoints.liked.push(like_user_id)
@@ -240,9 +246,64 @@ export const likeUser = async (req, res, next) => {
     }
  
     const reciverUPoints = (await UserPoints.find({ user_id: like_user_id }))[0];
-    console.log(reciverUPoints)
+  
     const new_notif = [...reciverUPoints.notifications, notif];
     reciverUPoints.notifications = new_notif;
+
+
+    //Decrease User Points
+    const { error, lifes } = await decresePoints(res, req.user_id);
+    if (error) {
+      return res.status(400).send("Not enough points");
+    }
+
+
+
+    await uPoints.save()
+    await reciverUPoints.save()
+
+    return res.status(200).send(uPoints);
+
+  } catch (error) {   
+
+    res.status(400).send(error);
+  }
+};
+
+
+export const dislikeUser = async (req, res, next) => {
+
+  try {
+    const dislike_user_id = req.params.id;
+  
+    
+    if (_.isNull(dislike_user_id) || _.isUndefined(dislike_user_id)) {
+      return res.status(400).send({ message: `Notification id is missing` });
+    }
+
+    if(dislike_user_id == req.user_id){
+      return res.status(400).send({ message: `Can't like yourself` });
+    }
+   
+    const uPoints = (await UserPoints.find({ user_id: req.user_id }))[0];
+    
+
+
+    //check if is already liked
+    if(uPoints.dislike.includes(dislike_user_id)){
+      return res.status(400).send({ message: `User already disliked` });
+    }
+
+ 
+    if(uPoints.liked.includes(dislike_user_id)){
+      uPoints.liked = uPoints.liked.filter(i=> i!=dislike_user_id)
+    }
+
+ 
+    uPoints.dislike.push(dislike_user_id)
+
+
+  
     
 
     //Decrease User Points
@@ -251,13 +312,14 @@ export const likeUser = async (req, res, next) => {
       return res.status(400).send("Not enough points");
     }
     await uPoints.save()
-    await reciverUPoints.save()
 
     return res.status(200).send(uPoints);
 
   } catch (error) {   
+    console.log(error)
     res.status(400).send(error);
   }
 };
+
 
 //TODO maybe unlike user 

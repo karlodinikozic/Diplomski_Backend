@@ -22,6 +22,14 @@ const UserPointsSchema = new Schema({
       required: true,
     },
   ],
+  dislike: [
+    //TODO MAYBE PUSH IT INTO USERSHCEMA
+    {
+      type: mongoose.ObjectId,
+      ref: "User",
+      required: true,
+    },
+  ],
   nextHeartAt: {
     type: Date,
     default: null,
