@@ -178,7 +178,7 @@ export const findSomeOne = async (req, res, next) => {
     const results_with_distance=  calculateDistance(user.lastKnownLocation.coordinates,
       users_results).filter(i=> i.distance <= range);
 
-    const search_user_Arr = [];
+    let search_user_Arr = [];
 
 
     results_with_distance
@@ -224,35 +224,61 @@ export const findSomeOne = async (req, res, next) => {
 
         let score = sum_arr.reduce((a, b) => a + b, 0);
 
-        // +1
-        score = score / sum_arr.length;
-
+       
         //age udaljenost od središta + 1
         score +=
           1 - Math.abs(user.age - u.age) / 15 < 0
             ? 0
             : 1 - Math.abs(user.age - u.age) / 15;
-
+// TODO AKO Sex Orinet tražim žene -> suprotno ako je biseskual oboje
         //sexsual orientation  različit spol  && orijentacija +1  , bisesksual +0.5 /+1
         let helper = 0;
-        if (user.sexualOrientation == u.sexualOrientation) {
+        // if (user.sexualOrientation == u.sexualOrientation) {
+        //   helper++;
+        // } else if (user.sexualOrientation == 2 || u.sexualOrientation == 2) {
+        //   helper += 0.5;
+        // }
+        // if (user.gender != u.gender) { //TODO MALE -> FAMALE
+        //   helper++;
+        // }
+
+        if(user.sexualOrientation == 2){
+          if(u.gender != user.gender  && u.sexualOrientation==0){
+            helper++;
+          }
+          else if(u.gender == user.gender || u.gender == 'other' && u.sexualOrientation== 1 ){
+            helper++;
+          }
+          else if(u.sexualOrientation==2){
+            helper++;
+          }
+     
+        } else if (user.sexualOrientation==1 && u.sexualOrientation ==1 && u.gender == user.gender){
           helper++;
-        } else if (user.sexualOrientation == 2 || u.sexualOrientation == 2) {
-          helper += 0.5;
         }
-        if (user.gender == u.gender) {
-          helper++;
+
+        else if (user.sexualOrientation==0 && u.sexualOrientation==0){
+          if(u.gender == 'male' && user.gender=='famale'){
+            helper++
+          }
+          else if(u.gender=='female' && user.gender == 'male'){
+            helper++
+          }
         }
+
         //TODO ADD SEXSUAL INTEREST
         score += helper / 2;
 
         let search_user = u
-        search_user.score = score / 3; // max score 1 , 1 point for categories , 1 for age , 1 for sexsual
+        search_user.score = score / (2+ sum_arr.length); // max score 1 , 1 point for categories , 1 for age , 1 for sexsual
      
         search_user_Arr.push(search_user);
       });
     
     //TODO REMOVE BLOCKED
+
+    search_user_Arr = search_user_Arr.filter(e=>!isNaN(e.score)).sort((a,b)=> b.score-a.score ).slice(0,10)
+
     return res.status(200).send(search_user_Arr);
   } catch (error) {
     console.log(error);
