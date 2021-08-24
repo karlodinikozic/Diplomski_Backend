@@ -1,7 +1,14 @@
 const { Socket } = require("socket.io");
+
+const localhost100 = []
+for (let i = 0; i < 100; i++) {
+  localhost100.push("http://localhost:300"+i)
+  
+}
+
 const io = require("socket.io")(8900, {
     cors: {
-      origin:"http://localhost:*" 
+      origin: localhost100
     },
   });
   let users = [];
