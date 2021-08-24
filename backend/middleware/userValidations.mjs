@@ -130,3 +130,13 @@ export const validateChangePassword = (obj) => {
 
   return error;
 }
+
+export const validateResendRegistrationEmail = (obj) => {
+  const resendRegistartionEmail = Joi.object({
+    email: Joi.string().email().required(),
+   
+  });
+  const { error } = resendRegistartionEmail.validate(obj);
+
+  return error;
+}

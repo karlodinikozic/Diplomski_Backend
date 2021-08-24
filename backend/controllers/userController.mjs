@@ -46,17 +46,17 @@ export const createUser = async (req, res, next) => {
 
     user.lastKnownLocation = {
       type: "Point",
-      coordinates:[0,0]
+      coordinates: [0, 0],
     };
 
     //SEND EMAIL
     const emailToken = await jwt.sign({ _id: user._id }, EMAIL_SECRET);
 
-    const emailUrl = SERVER_LOCATION+ "user/verifyEmail/"+emailToken
+    const emailUrl = SERVER_LOCATION + "user/verifyEmail/" + emailToken;
     const email_message = `<p>Molim vas kliknite ovdje kako bi ste potvrdili vaš email</p><a href="${emailUrl}">Potvrdi email</a> `;
     await sendEmail(user.email, email_message);
 
-     await user.save();
+    await user.save();
 
     return res.status(200).send({ message: "Success" });
   } catch (error) {
@@ -79,7 +79,6 @@ export const readUser = async (req, res, next) => {
         await user.save();
       }
     }
-
 
     //TODO ADD AGE
     return res.status(200).send(user);
@@ -107,7 +106,7 @@ export const updateUser = async (req, res, next) => {
       const { longitude, latitude } = update_data.location;
       update_data.lastKnownLocation = {
         type: "Point",
-        coordinates: [longitude,latitude ],
+        coordinates: [longitude, latitude],
       };
       delete update_data.location;
     }
@@ -158,14 +157,12 @@ export const deleteUser = async (req, res, next) => {
 
 export const verifyUserEmail = async (req, res, next) => {
   const token = req.params.token;
-  console.log("s")
+
   if (!token || _.isEmpty(token)) {
     return res.status(400).send({ message: "Missing Url Token" });
   }
 
   try {
- 
-
     const { _id } = await jwt.verify(token, EMAIL_SECRET);
 
     const user = await User.findById(_id);
@@ -174,11 +171,15 @@ export const verifyUserEmail = async (req, res, next) => {
       return res.status(404).send("User not found");
     }
 
+
+    if(user.email_verified){
+      return res.redirect(FRONT_LOCATION);
+    }
+
     user.email_verified = true;
     await user.save();
 
     //CREATING USER POINTS
-
     const uPoints = await new UserPoints({ user_id: _id });
     await uPoints.save();
 
@@ -192,12 +193,15 @@ export const setActive = async (req, res, next) => {
   try {
     const user = await User.findById({ _id: req.params_id });
 
-    if (user.lastKnownLocation.coordinates[0] == 0 && user.lastKnownLocation.coordinates[1] ==0) {
-      const { latitude,longitude  } = await getLocation(user.city, user.zip);
-      const {lat,long  } =  offsetLocation(latitude,longitude)
+    if (
+      user.lastKnownLocation.coordinates[0] == 0 &&
+      user.lastKnownLocation.coordinates[1] == 0
+    ) {
+      const { latitude, longitude } = await getLocation(user.city, user.zip);
+      const { lat, long } = offsetLocation(latitude, longitude);
       user.lastKnownLocation = {
         type: "Point",
-        coordinates: [lat,long ],
+        coordinates: [lat, long],
       };
     }
 
@@ -304,6 +308,47 @@ export const changePassword = async (req, res, next) => {
     await user.save();
 
     return res.status(200).send("Success");
+  } catch (error) {
+    console.log(error);
+    res.status(400).send(error);
+  }
+};
+
+export const resendRegistartionEmail = async (req, res, next) => {
+  const err = validateForgotPassword(req.body);
+  if (err) {
+    return res.status(400).send({ message: `Invalid request ${err}` });
+  }
+
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email: email });
+
+    if (user == null) {
+      return res
+        .status(400)
+        .send({
+          message: `Invalid request User with email ${email} does not exists`,
+        });
+    }
+
+    if (user.email_verified) {
+      return res
+        .status(400)
+        .send({ message: `Invalid request email already verified` });
+    }
+
+    //SEND EMAIL
+    const emailToken = await jwt.sign({ _id: user._id }, EMAIL_SECRET);
+
+    const emailUrl = SERVER_LOCATION + "user/verifyEmail/" + emailToken;
+    const email_message = `<p>Molim vas kliknite ovdje kako bi ste potvrdili vaš email</p><a href="${emailUrl}">Potvrdi email</a> `;
+    await sendEmail(user.email, email_message);
+
+
+    return res.status(200).send("Success");
+
   } catch (error) {
     console.log(error);
     res.status(400).send(error);

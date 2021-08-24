@@ -9,6 +9,7 @@ import { findServerUrl } from '../appsupport.mjs';
 import { setUserLocation } from "../controllers/userController.mjs";
 import { forgotPassword } from "../controllers/userController.mjs";
 import { changePassword } from "../controllers/userController.mjs";
+import { resendRegistartionEmail } from "../controllers/userController.mjs";
 export const router = Router();
 
 const userUrl = (req,res,next)=>{
@@ -23,6 +24,10 @@ const userFogotPasswordUrl = (req,res,next)=>{
 }
 const userChangePasswordUrl = (req,res,next)=>{
    req.newUrl = findServerUrl(req,`user/changePassword`,'auth/checkToken');next();
+}
+
+const resendRegistartionEmailUrl = (req,res,next)=>{
+   req.newUrl = findServerUrl(req,`user/resendEmail`,'auth/checkToken');next();
 }
 
 const paramEQuserId = (req,res,next)=>{req.params_id=req.user_id;next()}
@@ -57,5 +62,7 @@ router.post('/user/forgotPassword',userFogotPasswordUrl,forgotPassword)
 router.patch('/user/changePassword',userChangePasswordUrl,checkAccess,changePassword)
 
 
+//FOROGT PASSWORD
+router.post('/user/resendEmail',resendRegistartionEmailUrl,resendRegistartionEmail)
 
 
