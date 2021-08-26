@@ -103,11 +103,13 @@ export const updateUser = async (req, res, next) => {
     if (update_data.location) {
       //VALIDATE BODY
 
-      const { longitude, latitude } = update_data.location;
-      update_data.lastKnownLocation = {
-        type: "Point",
-        coordinates: [longitude, latitude],
-      };
+    //offset location from 200m to 500m
+    const { lat, long } = offsetLocation(update_data.location.latitude, update_data.location.longitude);
+
+    const user = await User.findById(req.user_id);
+
+    user.lastKnownLocation.coordinates = [lat, long];
+    await user.save()
       delete update_data.location;
     }
 
