@@ -321,5 +321,34 @@ export const dislikeUser = async (req, res, next) => {
   }
 };
 
+export const matchedUsers = async(req,res,next)=>{
+  const like_user_id = req.params.id;
+  
+    
+  if (_.isNull(like_user_id) || _.isUndefined(like_user_id)) {
+    return res.status(400).send({ message: `Notification id is missing` });
+  }
+
+  if(like_user_id == req.user_id){
+    return res.status(400).send({ message: `Can't like yourself` });
+  }
+ 
+  try {
+    const uPoints = (await UserPoints.find({ user_id: req.user_id }))[0];
+    
+    const matchUser = await UserPoints.findOne({user_id:like_user_id})
+
+    const responce = uPoints.liked.includes(like_user_id) && matchUser.liked.includes(req.user_id)
+
+    return res.status(200).send(responce);
+
+  } catch (error) {
+    res.status(400).send(error);
+  }
+ 
+
+
+}
+
 
 //TODO maybe unlike user 
