@@ -259,7 +259,7 @@ export const likeUser = async (req, res, next) => {
 
 
 
-    const new_uPoints = await uPoints.findOne( {user_id: req.user_id})
+    const new_uPoints = await UserPoints.findOne( {user_id: req.user_id})
     await reciverUPoints.save()
 
     return res.status(200).send(new_uPoints);
@@ -312,7 +312,7 @@ export const dislikeUser = async (req, res, next) => {
     if (error) {
       return res.status(400).send("Not enough points");
     }
-    const new_uPoints = await uPoints.findOne( {user_id: req.user_id})
+    const new_uPoints = await UserPoints.findOne( {user_id: req.user_id})
 
     return res.status(200).send(new_uPoints);
 
