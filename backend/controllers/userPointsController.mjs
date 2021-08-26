@@ -233,7 +233,7 @@ export const likeUser = async (req, res, next) => {
     }
 
     uPoints.liked.push(like_user_id)
-
+    await uPoints.save();
 
     //push notification
     const userthatLiked = await User.findById(req.user_id)
@@ -259,10 +259,10 @@ export const likeUser = async (req, res, next) => {
 
 
 
-    await uPoints.save()
+    const new_uPoints = await uPoints.findOne( {user_id: req.user_id})
     await reciverUPoints.save()
 
-    return res.status(200).send(uPoints);
+    return res.status(200).send(new_uPoints);
 
   } catch (error) {   
 
@@ -301,6 +301,7 @@ export const dislikeUser = async (req, res, next) => {
 
  
     uPoints.dislike.push(dislike_user_id)
+    await  uPoints.save()
 
 
   
@@ -311,9 +312,9 @@ export const dislikeUser = async (req, res, next) => {
     if (error) {
       return res.status(400).send("Not enough points");
     }
-    await uPoints.save()
+    const new_uPoints = await uPoints.findOne( {user_id: req.user_id})
 
-    return res.status(200).send(uPoints);
+    return res.status(200).send(new_uPoints);
 
   } catch (error) {   
     console.log(error)
