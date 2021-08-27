@@ -80,15 +80,15 @@ export const saveMessage = async (req, res, next) => {
 
     let newNotif =true
     //GET LAST UNSEEN
-    // const sameUserNotifications = uPoints.chat_notifications.filter(n=>n.senderId ==req.user_id)
-    // if(sameUserNotifications.length>0){
-    //   const lastDate = sameUserNotifications.reduce((a,b)=>a.date > b.date?a : b)
-    //   const hour= 1000 * 60 * 60;
-    //   newNotif = lastDate.date+hour > notif.date
-    //   if(lastDate.seen){
-    //     newNotif=false
-    //   }
-    // }
+    const sameUserNotifications = uPoints.chat_notifications.filter(n=>n.senderId ==req.user_id)
+    if(sameUserNotifications.length>0){
+      const lastDate = sameUserNotifications.reduce((a,b)=>a.date > b.date?a : b)
+      const hour= 1000 * 60 * 60;
+      newNotif = lastDate.date+hour > notif.date
+      if(lastDate.seen){
+        newNotif=false
+      }
+    }
   
 
     if(newNotif){
@@ -267,7 +267,7 @@ export const blockChat = async (req, res, next) => {
 
     await ChatThread.findByIdAndUpdate(
       { _id: req.body.chat_id },
-      { blockChat: false, userWhoBlocked: req.user_id }//TODO CHANGE THIS
+      { blockChat: true, userWhoBlocked: req.user_id }
     );
 
     const { error, lifes } = await decreaseUserPoints(res, req.user_id);

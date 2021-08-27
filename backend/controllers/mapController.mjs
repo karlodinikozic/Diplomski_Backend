@@ -41,7 +41,7 @@ export const usersOnMap = async (req, res, next) => {
     const results_with_distance = calculateDistance(
       user.lastKnownLocation.coordinates,
       users
-    ).filter(i=> i.distance <= range).filter(el => ! uPoints.dislike.includes(el._id));
+    ).filter(i=> i.distance <= range).filter(el => ! uPoints.dislike.includes(el._id)).filter(el=>el.score<0.05);
 
     return res.status(200).send(results_with_distance);
   } catch (error) {
