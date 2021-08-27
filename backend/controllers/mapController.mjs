@@ -41,7 +41,7 @@ export const usersOnMap = async (req, res, next) => {
     const results_with_distance = calculateDistance(
       user.lastKnownLocation.coordinates,
       users
-    ).filter(i=> i.distance <= range).filter(el => ! uPoints.dislike.includes(el._id)).filter(el=>el.score<0.05);
+    ).filter(i=> i.distance <= range).filter(el => ! uPoints.dislike.includes(el._id));
 
     return res.status(200).send(results_with_distance);
   } catch (error) {
@@ -284,7 +284,7 @@ export const findSomeOne = async (req, res, next) => {
     const uPoints = (await UserPoints.find({user_id:user._id}))[0]
 
     search_user_Arr = search_user_Arr.filter(el => ! uPoints.dislike.includes(el._id))
-    search_user_Arr = search_user_Arr.filter(e=>!isNaN(e.score)).sort((a,b)=> b.score-a.score ).slice(0,10)
+    search_user_Arr = search_user_Arr.filter(e=>!isNaN(e.score)).sort((a,b)=> b.score-a.score ).slice(0,10).filter(el=>el.score<0.05)
 
     return res.status(200).send(search_user_Arr);
   } catch (error) {
