@@ -284,7 +284,7 @@ export const findSomeOne = async (req, res, next) => {
     const uPoints = (await UserPoints.find({user_id:user._id}))[0]
 
     search_user_Arr = search_user_Arr.filter(el => ! uPoints.dislike.includes(el._id))
-    search_user_Arr = search_user_Arr.filter(e=>!isNaN(e.score)).sort((a,b)=> b.score-a.score ).slice(0,10).filter(el=>el.score<0.05)
+    search_user_Arr = search_user_Arr.filter(e=>!isNaN(e.score)).sort((a,b)=> b.score-a.score ).slice(0,10).filter(el=>el.score>0.05)
 
     return res.status(200).send(search_user_Arr);
   } catch (error) {
