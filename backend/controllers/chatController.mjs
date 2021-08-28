@@ -267,7 +267,7 @@ export const blockChat = async (req, res, next) => {
 
     await ChatThread.findByIdAndUpdate(
       { _id: req.body.chat_id },
-      { blockChat: true, userWhoBlocked: req.user_id }
+      { blockChat: req.body.block, userWhoBlocked: req.user_id }
     );
 
     const { error, lifes } = await decreaseUserPoints(res, req.user_id);
