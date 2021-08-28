@@ -165,7 +165,7 @@ const calculateDistance = (userLocation, arrOfPeople,isObject=false) => {
 export const findSomeOne = async (req, res, next) => {
   try {
     //make range
-    const range = 200;
+    const range = 1000;
 
     const user = await User.findById({ _id: req.user_id });
 

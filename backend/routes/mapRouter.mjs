@@ -12,4 +12,4 @@ const findSomeoneUrl = (req,res,next)=>{req.newUrl = findServerUrl(req,`findSome
 
 router.get("/map",mapUrl,checkAccess,usersOnMap)
 router.post("/map",mapUrl,checkAccess,filterUsersOnMap)
-router.post("/findSomeone",findSomeoneUrl,checkAccess,findSomeOne)
+router.get("/findSomeone",findSomeoneUrl,checkAccess,findSomeOne)
