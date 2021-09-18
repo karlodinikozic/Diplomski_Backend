@@ -286,6 +286,7 @@ export const blockChat = async (req, res, next) => {
         userWhoBlocked: req.user_id,
         nextHeartAt: Date.now() + LIFE_REFILL_TIME,
         lifes: lifes,
+        _id: req.body.chat_id,
       });
   } catch (error) {
     return res.status(400).send(error);
