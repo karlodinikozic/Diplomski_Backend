@@ -62,7 +62,7 @@ router.post('/user/forgotPassword',userFogotPasswordUrl,forgotPassword)
 router.patch('/user/changePassword',userChangePasswordUrl,checkAccess,changePassword)
 
 
-//FOROGT PASSWORD
+//FOROGT Email
 router.post('/user/resendEmail',resendRegistartionEmailUrl,resendRegistartionEmail)
 
 

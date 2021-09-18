@@ -231,7 +231,7 @@ export const getUserChats = async (req, res, next) => {
       })
     );
 
-    return res.status(200).send(new_results);
+    return res.status(200).send(new_results.sort((a,b)=>new Date(b.date) - new Date(a.date)));
   } catch (error) {
     return res.status(400).send(error);
   }
@@ -244,11 +244,11 @@ export const blockChat = async (req, res, next) => {
     if (err) {
       return res.status(400).send({ message: `Invalid request ${err}` });
     }
-    if (req.body.block == false) {
-      return res
-        .status(400)
-        .send({ message: `Invalid request Block must be true` });
-    }
+    // if (req.body.block == false) {
+    //   return res
+    //     .status(400)
+    //     .send({ message: `Invalid request Block must be true` });
+    // }
 
 
     const isBlocked = await ChatThread.findById({_id: req.body.chat_id })
@@ -258,10 +258,10 @@ export const blockChat = async (req, res, next) => {
         .status(400)
         .send({ message: `Invalid request chat wiht ${req.body.chat_id} doesn't exists` });
     }
-    if(isBlocked.blockChat){
+    if(isBlocked.blockChat == req.body.block ){
         return res
         .status(400)
-        .send({ message: `Invalid request chat already blocked` });
+        .send({ message: `Invalid request chat already ${!req.body.block?'un':''}blocked` });
     }
 
 

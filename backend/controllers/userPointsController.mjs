@@ -212,7 +212,7 @@ export const likeUser = async (req, res, next) => {
   
     
     if (_.isNull(like_user_id) || _.isUndefined(like_user_id)) {
-      return res.status(400).send({ message: `Notification id is missing` });
+      return res.status(400).send({ message: `User id is missing` });
     }
 
     if(like_user_id == req.user_id){

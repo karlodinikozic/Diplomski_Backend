@@ -29,9 +29,9 @@ app.use(cors())
 //* ROUTES
 app.use('/api/v1',authRouter) //Authentification
 app.use('/api/v1',userRouter) //User CRUD
-app.use('/api/v1',mapRouter) //
-app.use('/api/v1',chatRouter)
-app.use('/api/v1',userPointsRouter)
+app.use('/api/v1',mapRouter) //Map router
+app.use('/api/v1',chatRouter)// chat router
+app.use('/api/v1',userPointsRouter)//points
 
 
 

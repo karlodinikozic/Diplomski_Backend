@@ -33,8 +33,6 @@ export const usersOnMap = async (req, res, next) => {
     //   radius: range / 6371.1,
     //   spherical: true,
     // });
-
-
     const uPoints = (await UserPoints.find({user_id:user._id}))[0]
 
 

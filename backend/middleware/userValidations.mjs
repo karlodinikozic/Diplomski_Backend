@@ -103,7 +103,6 @@ export const validateUserLocation = (obj) => {
   const userLocationSchema = Joi.object({
     longitude: Joi.number().required(),
     latitude: Joi.number().required(),
-
   });
   const { error } = userLocationSchema.validate(obj);
 
@@ -113,30 +112,27 @@ export const validateUserLocation = (obj) => {
 export const validateForgotPassword = (obj) => {
   const forgotPasswordSchema = Joi.object({
     email: Joi.string().email().required(),
-   
   });
   const { error } = forgotPasswordSchema.validate(obj);
 
   return error;
-}
+};
 
 export const validateChangePassword = (obj) => {
   const changePasswordSceham = Joi.object({
     oldPassword: Joi.string().required(), //!!! TODO CHANGE REGX
-    newPassword:Joi.string().required()
-   
+    newPassword: Joi.string().required(),
   });
   const { error } = changePasswordSceham.validate(obj);
 
   return error;
-}
+};
 
 export const validateResendRegistrationEmail = (obj) => {
   const resendRegistartionEmail = Joi.object({
     email: Joi.string().email().required(),
-   
   });
   const { error } = resendRegistartionEmail.validate(obj);
 
   return error;
-}
+};

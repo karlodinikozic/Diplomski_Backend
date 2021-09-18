@@ -85,7 +85,7 @@ export async function decreaseUserPoints(res,user_id){
  
   try {
 
-    //! TOOD ALLOW ONLY ONE SETTIMEOUT
+   
     if(timeOut==null){
       uPoints[0].nextHeartAt =  Date.now()+LIFE_REFILL_TIME
      timeOut= setTimeout(async()=>{await addUserPointAfterTime(user_id)},LIFE_REFILL_TIME)

@@ -23,7 +23,7 @@ export const validateBlockChat = (obj) => {
 
     const validateSendMessageSchema = Joi.object({
         chat_id:Joi.string().required(),
-        block:Joi.boolean().invalid(false).required()
+        block:Joi.boolean().required()
     })
 
     const {
