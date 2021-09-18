@@ -216,6 +216,7 @@ export const getUserChats = async (req, res, next) => {
           req.user_id.localeCompare(el.user_1) == 0 ? el.user_2 : el.user_1;
 
         const user = await User.findById(search_id);
+
         let result = {
           firstName: user.firstName,
           lastName: user.lastName,
@@ -225,6 +226,7 @@ export const getUserChats = async (req, res, next) => {
           user_1: el.user_1,
           user_2: el.user_2,
           messages: el.messages,
+          blocked:el.blockChat
         };
 
         return result;
