@@ -226,7 +226,7 @@ export const getUserChats = async (req, res, next) => {
           user_1: el.user_1,
           user_2: el.user_2,
           messages: el.messages,
-          blocked:el.blockChat
+          blockChat:el.blockChat
         };
 
         return result;
@@ -282,7 +282,7 @@ export const blockChat = async (req, res, next) => {
       .status(200)
       .send({
         message: `Chat blocked succesfully by ${req.user_id}`,
-        blocked: true,
+        blockChat: req.body.block,
         userWhoBlocked: req.user_id,
         nextHeartAt: Date.now() + LIFE_REFILL_TIME,
         lifes: lifes,
