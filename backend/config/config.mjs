@@ -15,5 +15,5 @@ export const GEOCDOER_API_KEY="jeOH3ZAqSTirAkIzBdCiFU4PF3cX8dgw"
 
 export const CLOUDINARY_URL ="https://cloudinary.com"
 
-export const LIFE_REFILL_TIME = 10000 
+export const LIFE_REFILL_TIME = 100000 
 export const SERVER_LOCATION = "http://localhost:3000/api/v1/" 
