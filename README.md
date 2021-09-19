@@ -7,7 +7,7 @@ Razvoj poslužiteljski komponenti web aplikacije za stvaranje novih prijateljski
 2. yarn run dev
 
 # Poslužiteljski dio 
-https://github.com/lallachan/DatingApp-Diplomski
+
 <h2> Author: Karlo Dini Kožić </h2>
 Youtube video
 https://youtu.be/1gk4HoG_YIk
@@ -15,6 +15,7 @@ https://youtu.be/1gk4HoG_YIk
 
 # Klijentski dio
 <h2> Author: Laura Sučić </h2>
+https://github.com/lallachan/DatingApp-Diplomski <br>
 Youtube video
 https://www.youtube.com/watch?v=rE68Na6FXBg
 
