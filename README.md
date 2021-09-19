@@ -1,5 +1,5 @@
 # Diplomski_Backend
-Backend Web components for master thesis project
+Backend Web components for master thesis project <br>
 Razvoj poslužiteljski komponenti web aplikacije za stvaranje novih prijateljskih i ljubavnih veza u sklopu diplomskog rada
 
 # Upute za instalaciju / Installation Instructions
