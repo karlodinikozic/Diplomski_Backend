@@ -114,7 +114,7 @@ const userSchema = new Schema({
      interest:{
        type:String,
       required:true,
-      unique:true,
+   
      }
     }
   ],
@@ -123,7 +123,7 @@ const userSchema = new Schema({
     imageUrl:{
       type:String,
       required:true,
-      unique:true,
+     
     }
   }
   ]
