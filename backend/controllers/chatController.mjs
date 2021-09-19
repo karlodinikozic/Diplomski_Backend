@@ -266,6 +266,16 @@ export const blockChat = async (req, res, next) => {
         .send({ message: `Invalid request chat already ${!req.body.block?'un':''}blocked` });
     }
 
+    
+    if(! req.body.block){
+
+      const chatThread  = await ChatThread.findById(req.body.chat_id);
+      if(req.user_id != chatThread.userWhoBlocked){
+        return res.status(400).send("You can't unblock this chat");
+      }
+    }
+
+
 
     await ChatThread.findByIdAndUpdate(
       { _id: req.body.chat_id },
