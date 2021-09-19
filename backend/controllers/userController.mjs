@@ -43,7 +43,7 @@ export const createUser = async (req, res, next) => {
     user_data.gender = user_data.gender.toLowerCase();
 
     const user = new User(user_data);
-
+    console.log(user)
     user.lastKnownLocation = {
       type: "Point",
       coordinates: [0, 0],

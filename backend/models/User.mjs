@@ -109,7 +109,8 @@ const userSchema = new Schema({
     {
      category:{
        type:String,
-       required:true
+       required:true,
+      
      },
      interest:{
        type:String,
