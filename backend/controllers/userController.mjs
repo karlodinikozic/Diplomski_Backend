@@ -56,6 +56,11 @@ export const createUser = async (req, res, next) => {
     const email_message = `<p>Molim vas kliknite ovdje kako bi ste potvrdili vaš email</p><a href="${emailUrl}">Potvrdi email</a> `;
     await sendEmail(user.email, email_message);
 
+       //CREATING USER POINTS
+       const uPoints =  new UserPoints({ user_id: user._id });
+
+       await uPoints.save();
+
     await user.save();
 
     return res.status(200).send({ message: "Success" });
@@ -181,9 +186,7 @@ export const verifyUserEmail = async (req, res, next) => {
     user.email_verified = true;
     await user.save();
 
-    //CREATING USER POINTS
-    const uPoints = await new UserPoints({ user_id: _id });
-    await uPoints.save();
+ 
 
     return res.redirect(FRONT_LOCATION);
   } catch (error) {
