@@ -242,7 +242,7 @@ export const likeUser = async (req, res, next) => {
       type:'1',
       senderId:req.user_id,
       receiverId:like_user_id,
-      text: userthatLiked.firstName +" "+ userthatLiked.lastName + " has liked you"
+      text: "Korisniku "+userthatLiked.firstName +" "+ userthatLiked.lastName + " se sviđate"
     }
  
     const reciverUPoints = (await UserPoints.find({ user_id: like_user_id }))[0];
@@ -254,7 +254,7 @@ export const likeUser = async (req, res, next) => {
     //Decrease User Points
     const { error, lifes } = await decresePoints(res, req.user_id);
     if (error) {
-      return res.status(400).send("Not enough points");
+      return res.status(400).send("Nemate dovoljno životnih bodova");
     }
 
 
@@ -310,7 +310,7 @@ export const dislikeUser = async (req, res, next) => {
     //Decrease User Points
     const { error, lifes } = await decresePoints(res, req.user_id);
     if (error) {
-      return res.status(400).send("Not enough points");
+      return res.status(400).send("Nemate dovoljno životnih bodova");
     }
     const new_uPoints = await UserPoints.findOne( {user_id: req.user_id})
 
