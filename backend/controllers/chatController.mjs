@@ -137,12 +137,12 @@ export const createThread = async (req, res, next) => {
     //Check if both liked
     const sender = await UserPoints.findOne({user_id:req.user_id})
     if(! sender.liked.includes(recipient_id) ){
-      return res.status(400).send({ message: `You haven't liked the user with id ${recipient_id}` });
+      return res.status(400).send({ message: `Kako bi započeli razgovor s ovim korisnikom morate vam se sviđati` });
     }
 
     const reciver = await UserPoints.findOne({user_id:recipient_id})
     if(! reciver.liked.includes(req.user_id) ){
-      return res.status(400).send(`Ovaj korisnik vaš još nije odobrio` ); //TODO ADD NAME
+      return res.status(400).send(`Ovaj korisnik vas još nije odobrio` ); //TODO ADD NAME
     }
 
 
