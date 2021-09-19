@@ -258,12 +258,12 @@ export const blockChat = async (req, res, next) => {
     if(isBlocked===null){
         return res
         .status(400)
-        .send({ message: `Invalid request chat wiht ${req.body.chat_id} doesn't exists` });
+        .send({ message: `Nevažeći zahtjev traženi chat s ID-em  ${req.body.chat_id} ne postoji` });
     }
     if(isBlocked.blockChat == req.body.block ){
         return res
         .status(400)
-        .send({ message: `Invalid request chat already ${!req.body.block?'un':''}blocked` });
+        .send({ message: `Nevažeći zahtjev traženi chat je već ${!req.body.block?'de':''}blokiran` });
     }
 
     
@@ -285,13 +285,13 @@ export const blockChat = async (req, res, next) => {
     const { error, lifes } = await decreaseUserPoints(res, req.user_id);
     if (error) {
         
-      return res.status(400).send("Not enough points");
+      return res.status(400).send("Nemate dovoljno životnih bodova");
     }
 
     return res
       .status(200)
       .send({
-        message: `Chat blocked succesfully by ${req.user_id}`,
+        message: `Chat je uspješno ${!req.body.block?'de':''} blokiran succesfully by ${req.user_id}`,
         blockChat: req.body.block,
         userWhoBlocked: req.user_id,
         nextHeartAt: Date.now() + LIFE_REFILL_TIME,
