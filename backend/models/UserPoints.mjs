@@ -107,7 +107,7 @@ const UserPointsSchema = new Schema({
       type: mongoose.ObjectId,
       ref: "User",
       required: true,
-      unique: true,
+    
     },
   ]
 });
