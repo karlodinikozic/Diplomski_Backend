@@ -38,8 +38,6 @@ app.use('/api/v1',userPointsRouter)//points
 
 
 
-app.listen(PORT,()=>{
-    console.log(`Server running on https//localhost:${PORT}`)
-})
+app.listen(PORT, '0.0.0.0')
 
 

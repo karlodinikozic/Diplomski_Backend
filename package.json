@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "predev": "concurrently  \"cd authserver && yarn add all\" \"cd backend && yarn add all\"  \"cd socketio && yarn add all\"",
+    "predev": "concurrently  \"cd authserver && yarn\" \"cd backend && yarn\"  \"cd socketio && yarn\"",
     "dev": " concurrently  \"cd authserver && yarn run dev\" \"cd backend && yarn run dev\"  \"cd socketio && yarn run dev\"",
     "prestart": "concurrently  \"cd authserver && yarn add all\" \"cd backend && yarn add all\"  \"cd socketio && yarn add all\"",
     "start": " concurrently  \"cd authserver && yarn run start\" \"cd backend && yarn run start\"  \"cd socketio && yarn run start\""
